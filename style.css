@@ -134,3 +134,8 @@ button:hover:not(:disabled),.nav-link:hover{border-color:#7b8495}
 
 .cell.obstacle:before{display:none!important;content:none!important}
 .cell .obstacle-sprite{inset:5%;width:90%;height:90%;z-index:31;filter:drop-shadow(0 3px 4px #0009)}
+
+.cell.goal:after{display:none!important;content:none!important}
+.cell .goal-sprite{inset:2%;width:96%;height:96%;z-index:41;filter:drop-shadow(0 0 7px #ffb000aa)}
+.legend .legend-sprite{width:28px;height:28px;margin-right:6px;object-fit:contain;vertical-align:middle;border-radius:0;image-rendering:pixelated}
+.legend span{display:inline-flex;align-items:center}
