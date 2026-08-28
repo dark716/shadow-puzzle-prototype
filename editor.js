@@ -36,9 +36,15 @@ function render(){
   output.value=map.map(row=>row.join("")).join("\n");
   validate();save();
 }
+function selectTile(value){
+  selected=value;
+  document.querySelectorAll(".tile").forEach(button=>button.classList.toggle("active",button.dataset.tile===value));
+}
 function paint(x,y,value){
   if(value==="P"||value==="G")map.forEach(row=>row.forEach((v,i)=>{if(v===value)row[i]="."}));
-  map[y][x]=value;render();
+  map[y][x]=value;
+  selectTile(".");
+  render();
 }
 function validate(){
   const flat=map.flat(),players=flat.filter(v=>v==="P").length,goals=flat.filter(v=>v==="G").length;
@@ -53,9 +59,7 @@ function validate(){
   validation.className="validation "+(notes.length?"warn":"ok");
   validation.textContent=notes.length?notes.join(" "):"기본 검사를 통과했습니다. 맵 코드를 복사해도 좋습니다.";
 }
-document.querySelectorAll(".tile").forEach(btn=>btn.addEventListener("click",()=>{
-  selected=btn.dataset.tile;document.querySelectorAll(".tile").forEach(b=>b.classList.toggle("active",b===btn));
-}));
+document.querySelectorAll(".tile").forEach(btn=>btn.addEventListener("click",()=>selectTile(btn.dataset.tile)));
 document.querySelector("#resizeButton").addEventListener("click",()=>{
   const w=Math.max(5,Math.min(30,+widthInput.value||13)),h=Math.max(5,Math.min(30,+heightInput.value||10));
   const next=Array.from({length:h},(_,y)=>Array.from({length:w},(_,x)=>map[y]?.[x]??"."));
