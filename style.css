@@ -131,3 +131,6 @@ button:hover:not(:disabled),.nav-link:hover{border-color:#7b8495}
 .mobile-control-deck{background:#151920;border-color:#383e49}
 .skill-pad .locked{background:#242933;color:#697181;border-color:#414754}
 .legend,.controls p,.rules li{color:#a7adba}
+
+.cell.obstacle:before{display:none!important;content:none!important}
+.cell .obstacle-sprite{inset:5%;width:90%;height:90%;z-index:31;filter:drop-shadow(0 3px 4px #0009)}
