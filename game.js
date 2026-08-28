@@ -41,7 +41,7 @@ function moveCursor(dx,dy){
   state.cursor.x=Math.max(0,Math.min(MAP[0].length-1,state.cursor.x+dx));
   state.cursor.y=Math.max(0,Math.min(MAP.length-1,state.cursor.y+dy));
   const valid=candidates().some(p=>p.x===state.cursor.x&&p.y===state.cursor.y)&&!blocked(state.cursor.x,state.cursor.y);
-  message.textContent=valid?"이 위치에는 그림자를 생성할 수 있습니다. Enter로 확정하세요.":"현재 위치에는 그림자를 생성할 수 없습니다.";
+  message.textContent=valid?"이 위치에는 그림자를 생성할 수 있습니다. W로 확정하세요.":"현재 위치에는 그림자를 생성할 수 없습니다.";
   render();
 }
 function confirmShadow(){
@@ -58,12 +58,9 @@ document.querySelectorAll("[data-move]").forEach(b=>b.addEventListener("click",(
 document.addEventListener("keydown",e=>{
   if(e.key==="w"||e.key==="W"){
     e.preventDefault();
-    if(state.shadow)swap();else toggleShadowSelection();
-    return;
-  }
-  if(e.key==="Enter"&&state.selecting){
-    e.preventDefault();
-    confirmShadow();
+    if(state.shadow)swap();
+    else if(state.selecting)confirmShadow();
+    else toggleShadowSelection();
     return;
   }
   const d={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]}[e.key];
