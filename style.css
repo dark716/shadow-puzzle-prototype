@@ -65,3 +65,22 @@
 .cell.goal{background:radial-gradient(circle,#ffe07abf,#58aeb2 68%)}
 .cell.candidate{background:#8069cf;border-color:#ad9bea}
 .cell.invalid{background:#765763;border-color:#9b7883}
+
+/* Light gameplay theme: removes the overall dark-filter impression. */
+:root{--bg:#dcebef;--panel:#edf6f7;--line:#9ebbc2;--text:#17242d;--muted:#526a75}
+body{background:radial-gradient(circle at 50% -20%,#ffffff 0,#dcecef 48%,#c9dde2 100%);color:var(--text)}
+.status>div,.board-panel,.controls section{background:#edf6f7f2;border-color:#a7c5ca;box-shadow:0 12px 35px #56768026}
+.status .message{color:#263a44}
+button,.nav-link{background:#d7e7ea;color:#20313a;border-color:#9db9bf}
+button:hover:not(:disabled),.nav-link:hover{border-color:#638892}
+.ghost{background:#eef7f8}
+.board-panel{background:#e4f2f3}
+.board{background:#3c8d98;border-color:#bfe8e8;box-shadow:0 8px 24px #315e6826}
+.cell{background:#80d1ce;border-color:#a9e2df}
+.cell.wall{background:linear-gradient(145deg,#75aebb,#527f8d);box-shadow:inset 0 0 0 2px #94c5ce}
+.cell.goal{background:radial-gradient(circle,#ffe584e6,#80d1ce 70%)}
+.cell.candidate{background:#a38ae6;border-color:#c9b9f2}
+.cell.invalid{background:#a77b86;border-color:#c69da6}
+.mobile-control-deck{background:#d8e9eb;border-color:#a6c2c7}
+.skill-pad .locked{background:#c6d8dc;color:#789099}
+.legend{color:#526a75}
