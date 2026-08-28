@@ -64,7 +64,7 @@ const BUILT_IN_STAGES=[
 const APPLIED_STAGES_KEY="shadowPuzzleAppliedStages";
 const SPRITES={
   playerIdle:"assets/sprites/player_idle.png?v=1",
-  playerWalk:"assets/sprites/player_walk.png?v=1",
+  playerWalk:"assets/sprites/player_idle.png?v=2",
   playerThrow:"assets/sprites/player_throw.png?v=1",
   shadowSpawn:"assets/effects/shadow_spawn.png?v=1",
   swapBurst:"assets/effects/swap_burst.png?v=1",
@@ -299,9 +299,10 @@ function animatePlayerMove(from,to,facing){
   return new Promise(resolve=>{
     const started=performance.now();
     function tick(now){
-      const progress=Math.min(1,(now-started)/duration(150));
+      const progress=Math.min(1,(now-started)/duration(180));
       const eased=1-Math.pow(1-progress,3);
-      setSheetFrame(actor,Math.min(3,Math.floor(progress*4)),DIRECTION_ROWS[facing]);
+      const walkFrames=[0,1,0,2];
+      setSheetFrame(actor,walkFrames[Math.min(3,Math.floor(progress*4))],DIRECTION_ROWS[facing]);
       actor.style.transform=`translate(${distanceX*eased}px,${distanceY*eased}px)`;
       if(progress<1)requestAnimationFrame(tick);else resolve();
     }
