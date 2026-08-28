@@ -76,7 +76,7 @@ function canStillReachGoal(){
 function showGameOver(){
   state.gameOver=true;state.selecting=false;state.cursor=null;
   message.textContent="현재 상태에서는 더 이상 출구에 도달할 수 없습니다.";
-  gameOverModal.hidden=false;loadStage(0);
+  gameOverModal.hidden=false;render();
 }
 function evaluateState(){
   if(!state.cleared&&!state.gameOver&&!canStillReachGoal())showGameOver();
