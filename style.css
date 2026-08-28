@@ -84,3 +84,6 @@ button:hover:not(:disabled),.nav-link:hover{border-color:#638892}
 .mobile-control-deck{background:#d8e9eb;border-color:#a6c2c7}
 .skill-pad .locked{background:#c6d8dc;color:#789099}
 .legend{color:#526a75}
+
+html,body{background:transparent!important}
+.board-panel{background:transparent!important;box-shadow:none!important}
