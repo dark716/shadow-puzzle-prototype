@@ -15,7 +15,7 @@ const output=document.querySelector("#mapOutput");
 const validation=document.querySelector("#validation");
 const widthInput=document.querySelector("#widthInput");
 const heightInput=document.querySelector("#heightInput");
-let map=SAMPLE.map(row=>[...row]),selected=".",painting=false,strokeTile=".";
+let map=SAMPLE.map(row=>[...row]),currentTileType=".",canPlaceTile=false;
 
 function normalize(rows){
   const width=Math.max(...rows.map(r=>r.length));
@@ -31,12 +31,11 @@ function render(){
     cell.addEventListener("pointerdown",e=>{
       if(e.button!==0)return;
       e.preventDefault();
-      painting=true;
-      strokeTile=selected;
-      paint(x,y,strokeTile);
+      canPlaceTile=true;
+      paint(x,y,currentTileType);
     });
     cell.addEventListener("pointerenter",e=>{
-      if(painting&&e.buttons===1)paint(x,y,strokeTile);
+      if(canPlaceTile&&e.buttons===1)paint(x,y,currentTileType);
     });
     cell.addEventListener("contextmenu",e=>{e.preventDefault()});
     gridEl.append(cell);
@@ -46,7 +45,7 @@ function render(){
   validate();save();
 }
 function selectTile(value){
-  selected=value;
+  currentTileType=value;
   document.querySelectorAll(".tile").forEach(button=>button.classList.toggle("active",button.dataset.tile===value));
 }
 function paint(x,y,value){
@@ -69,15 +68,10 @@ function validate(){
 }
 document.querySelectorAll(".tile").forEach(btn=>btn.addEventListener("click",()=>selectTile(btn.dataset.tile)));
 document.addEventListener("pointerup",()=>{
-  if(!painting)return;
-  painting=false;
-  strokeTile=".";
-  selectTile(".");
+  canPlaceTile=false;
 });
 document.addEventListener("pointercancel",()=>{
-  painting=false;
-  strokeTile=".";
-  selectTile(".");
+  canPlaceTile=false;
 });
 document.querySelector("#resizeButton").addEventListener("click",()=>{
   const w=Math.max(5,Math.min(30,+widthInput.value||13)),h=Math.max(5,Math.min(30,+heightInput.value||10));
