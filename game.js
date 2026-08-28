@@ -15,6 +15,7 @@ const board=document.querySelector("#board"),message=document.querySelector("#me
 const turnCount=document.querySelector("#turnCount"),shadowTurns=document.querySelector("#shadowTurns");
 const shadowButton=document.querySelector("#shadowButton"),swapButton=document.querySelector("#swapButton");
 const gameOverModal=document.querySelector("#gameOverModal");
+document.querySelector(".board-panel").append(gameOverModal);
 const key=(x,y)=>x+","+y;
 const walls=new Set(),obstacles=new Set();let goal;
 MAP.forEach((row,y)=>[...row].forEach((v,x)=>{if(v==="#")walls.add(key(x,y));if(v==="O")obstacles.add(key(x,y));if(v==="P")state.player={x,y};if(v==="G")goal={x,y}}));
