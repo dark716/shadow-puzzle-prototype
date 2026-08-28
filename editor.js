@@ -15,7 +15,7 @@ const output=document.querySelector("#mapOutput");
 const validation=document.querySelector("#validation");
 const widthInput=document.querySelector("#widthInput");
 const heightInput=document.querySelector("#heightInput");
-let map=SAMPLE.map(row=>[...row]),selected=".";
+let map=SAMPLE.map(row=>[...row]),selected=".",painting=false,strokeTile=".";
 
 function normalize(rows){
   const width=Math.max(...rows.map(r=>r.length));
@@ -28,8 +28,17 @@ function render(){
   map.forEach((row,y)=>row.forEach((value,x)=>{
     const cell=document.createElement("button");
     cell.className="cell";cell.dataset.value=value;cell.title=x+", "+y;
-    cell.addEventListener("click",()=>paint(x,y,selected));
-    cell.addEventListener("contextmenu",e=>{e.preventDefault();paint(x,y,".")});
+    cell.addEventListener("pointerdown",e=>{
+      if(e.button!==0)return;
+      e.preventDefault();
+      painting=true;
+      strokeTile=selected;
+      paint(x,y,strokeTile);
+    });
+    cell.addEventListener("pointerenter",e=>{
+      if(painting&&e.buttons===1)paint(x,y,strokeTile);
+    });
+    cell.addEventListener("contextmenu",e=>{e.preventDefault()});
     gridEl.append(cell);
   }));
   widthInput.value=map[0].length;heightInput.value=map.length;
@@ -43,7 +52,6 @@ function selectTile(value){
 function paint(x,y,value){
   if(value==="P"||value==="G")map.forEach(row=>row.forEach((v,i)=>{if(v===value)row[i]="."}));
   map[y][x]=value;
-  selectTile(".");
   render();
 }
 function validate(){
@@ -60,6 +68,17 @@ function validate(){
   validation.textContent=notes.length?notes.join(" "):"기본 검사를 통과했습니다. 맵 코드를 복사해도 좋습니다.";
 }
 document.querySelectorAll(".tile").forEach(btn=>btn.addEventListener("click",()=>selectTile(btn.dataset.tile)));
+document.addEventListener("pointerup",()=>{
+  if(!painting)return;
+  painting=false;
+  strokeTile=".";
+  selectTile(".");
+});
+document.addEventListener("pointercancel",()=>{
+  painting=false;
+  strokeTile=".";
+  selectTile(".");
+});
 document.querySelector("#resizeButton").addEventListener("click",()=>{
   const w=Math.max(5,Math.min(30,+widthInput.value||13)),h=Math.max(5,Math.min(30,+heightInput.value||10));
   const next=Array.from({length:h},(_,y)=>Array.from({length:w},(_,x)=>map[y]?.[x]??"."));
