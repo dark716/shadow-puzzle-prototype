@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#11131a">
   <title>그림자 퍼즐 — Stage 1</title>
   <link rel="stylesheet" href="style-v30.css">
+  <link rel="stylesheet" href="animation-v1.css">
 </head>
 <body>
   <main class="app">
@@ -27,8 +28,8 @@
       <section class="board-panel">
         <div id="board" class="board" role="grid" aria-label="Stage 1 격자"></div>
         <div class="legend">
-          <span><img class="legend-sprite" src="assets/player.png" alt="">본체</span>
-          <span><img class="legend-sprite" src="assets/shadow.png" alt="">그림자</span>
+          <span><img class="legend-sprite" src="assets/icons/player.png" alt="">본체</span>
+          <span><img class="legend-sprite shadow-legend" src="assets/icons/player.png" alt="">그림자</span>
           <span><img class="legend-sprite" src="assets/obstacle.png" alt="">장애물</span>
           <span><img class="legend-sprite" src="assets/goal.png" alt="">출구</span>
         </div>
@@ -51,7 +52,7 @@
               <span class="control-label">스킬</span>
               <div class="skill-pad">
                 <button id="shadowButton" class="primary shadow-action" aria-label="그림자 행동"><strong>W</strong><span>그림자</span></button>
-                <button class="skill-slot locked" disabled aria-label="잠긴 스킬 슬롯 2">＋</button>
+                <button id="shurikenButton" class="skill-slot shuriken-action" aria-label="바라보는 방향으로 표창 던지기"><strong>Q</strong><span>표창</span></button>
                 <button class="skill-slot locked" disabled aria-label="잠긴 스킬 슬롯 3">＋</button>
                 <button class="skill-slot locked" disabled aria-label="잠긴 스킬 슬롯 4">＋</button>
               </div>
@@ -59,7 +60,7 @@
           </div>
           <button id="cancelShadowButton" class="cancel-shadow" hidden>생성 취소 (Esc)</button>
           <button id="swapButton" hidden disabled aria-hidden="true">그림자와 스왑</button>
-          <p>왼쪽: 이동·조준 / 오른쪽: 최대 4개 스킬</p>
+          <p>방향키: 이동·방향 전환 / W: 그림자·스왑 / Q: 표창</p>
         </section>
 
         <section class="rules">
@@ -84,6 +85,6 @@
       </div>
     </section>
   </div>
-  <script src="game-v33.js"></script>
+  <script src="game-v34.js"></script>
 </body>
 </html>

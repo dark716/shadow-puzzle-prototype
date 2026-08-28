@@ -1,0 +1,75 @@
+/* Sprite and effect layers for v34. The board tiles remain static underneath. */
+.board{
+  position:relative;
+  isolation:isolate;
+}
+.entity-layer,.effect-layer{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
+.entity-layer{z-index:80}
+.effect-layer{z-index:90;overflow:visible}
+
+.actor,.cell-effect,.projectile{
+  position:absolute;
+  width:var(--cell);
+  height:var(--cell);
+  background-repeat:no-repeat;
+  image-rendering:pixelated;
+  transform-origin:center;
+  will-change:transform,opacity,background-position;
+  pointer-events:none;
+}
+.actor{z-index:2;filter:drop-shadow(0 2px 4px #000b)}
+.shadow-actor{
+  z-index:1;
+  opacity:.82;
+  filter:grayscale(1) sepia(1) hue-rotate(222deg) saturate(5.5) brightness(.73) drop-shadow(0 2px 6px #6b2bbdcc);
+}
+.shadow-legend{
+  opacity:.82;
+  filter:grayscale(1) sepia(1) hue-rotate(222deg) saturate(5.5) brightness(.73) drop-shadow(0 1px 3px #6b2bbdcc);
+}
+.cell-effect{z-index:5}
+.projectile{z-index:6}
+
+.idle-animation{
+  animation:idle-sprite-frames 640ms steps(1,end) infinite;
+}
+.manual-animation{animation:none!important}
+@keyframes idle-sprite-frames{
+  0%,24.99%{background-position-x:0%}
+  25%,49.99%{background-position-x:33.333333%}
+  50%,74.99%{background-position-x:66.666667%}
+  75%,100%{background-position-x:100%}
+}
+@keyframes swap-flicker{
+  0%,100%{opacity:1;transform:scale(1)}
+  45%{opacity:.12;transform:scale(.72)}
+  55%{opacity:.18;transform:scale(1.12)}
+}
+.swap-flicker{animation:swap-flicker 240ms ease-in-out both!important}
+
+/* Disable the legacy single-image player; v34 draws actors in the entity layer. */
+.cell.player:after,.cell.shadow:before{display:none!important;content:none!important}
+
+.skill-pad .shuriken-action{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:2px;
+  background:linear-gradient(135deg,#702b35,#a83943);
+  border-color:#cf5962;
+  color:#fff;
+  font-size:.7rem;
+  line-height:1.1;
+}
+.skill-pad .shuriken-action strong{font-size:1rem}
+.skill-pad .shuriken-action span{font-size:.67rem}
+
+@media(prefers-reduced-motion:reduce){
+  .idle-animation{animation:none}
+  .swap-flicker{animation-duration:1ms!important}
+}
