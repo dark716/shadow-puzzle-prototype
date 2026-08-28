@@ -53,3 +53,7 @@
 .cell.invalid{background:#55444e}
 
 .cell.shadow:before{content:"";width:94%;height:94%;border-radius:0;background:transparent url("assets/shadow.png") center/contain no-repeat;box-shadow:none;image-rendering:pixelated;filter:drop-shadow(0 2px 5px #32105ccc)}
+
+.cell.shadow:before{display:none!important;content:none!important}
+.cell .entity-sprite{position:absolute;inset:3%;width:94%;height:94%;object-fit:contain;z-index:2;pointer-events:none;user-select:none;image-rendering:pixelated}
+.cell .shadow-sprite{filter:drop-shadow(0 2px 5px #32105ccc)}
