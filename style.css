@@ -51,3 +51,5 @@
 .cell.goal{background:radial-gradient(circle,#ffd166a8,#3f7479 68%)}
 .cell.candidate{background:#665aa0}
 .cell.invalid{background:#55444e}
+
+.cell.shadow:before{content:"";width:94%;height:94%;border-radius:0;background:transparent url("assets/shadow.png") center/contain no-repeat;box-shadow:none;image-rendering:pixelated;filter:drop-shadow(0 2px 5px #32105ccc)}
