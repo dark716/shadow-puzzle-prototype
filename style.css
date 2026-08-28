@@ -105,3 +105,7 @@ body{background:radial-gradient(circle at 50% -20%,#ffffff 0,#dcecef 48%,#c9dde2
 .cell .shadow-sprite{z-index:51}
 .cell.player:after{z-index:61}
 .cell.target-cursor{z-index:7}
+
+/* Grid cells use disabled only to block clicks; they must remain fully opaque. */
+.board .cell:disabled{opacity:1}
+.board .cell.player:after,.board .cell .entity-sprite,.board .cell.goal:after,.board .cell.obstacle:before{opacity:1}
