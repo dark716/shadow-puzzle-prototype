@@ -15,7 +15,7 @@ const output=document.querySelector("#mapOutput");
 const validation=document.querySelector("#validation");
 const widthInput=document.querySelector("#widthInput");
 const heightInput=document.querySelector("#heightInput");
-let map=SAMPLE.map(row=>[...row]),selected=".",painting=false;
+let map=SAMPLE.map(row=>[...row]),selected=".";
 
 function normalize(rows){
   const width=Math.max(...rows.map(r=>r.length));
@@ -28,8 +28,7 @@ function render(){
   map.forEach((row,y)=>row.forEach((value,x)=>{
     const cell=document.createElement("button");
     cell.className="cell";cell.dataset.value=value;cell.title=x+", "+y;
-    cell.addEventListener("pointerdown",e=>{e.preventDefault();painting=true;paint(x,y,e.button===2?".":selected)});
-    cell.addEventListener("pointerenter",e=>{if(painting)paint(x,y,e.buttons===2?".":selected)});
+    cell.addEventListener("click",()=>paint(x,y,selected));
     cell.addEventListener("contextmenu",e=>{e.preventDefault();paint(x,y,".")});
     gridEl.append(cell);
   }));
@@ -54,7 +53,6 @@ function validate(){
   validation.className="validation "+(notes.length?"warn":"ok");
   validation.textContent=notes.length?notes.join(" "):"기본 검사를 통과했습니다. 맵 코드를 복사해도 좋습니다.";
 }
-document.addEventListener("pointerup",()=>painting=false);
 document.querySelectorAll(".tile").forEach(btn=>btn.addEventListener("click",()=>{
   selected=btn.dataset.tile;document.querySelectorAll(".tile").forEach(b=>b.classList.toggle("active",b===btn));
 }));
