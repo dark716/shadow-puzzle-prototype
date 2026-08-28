@@ -13,6 +13,7 @@ const DEFAULT_MAP=[
 const STAGES_KEY="shadowPuzzleStages";
 const LEGACY_MAP_KEY="shadowPuzzleMap";
 const CURRENT_STAGE_KEY="shadowPuzzleCurrentStage";
+const APPLIED_STAGES_KEY="shadowPuzzleAppliedStages";
 const ALLOWED_TILES=new Set([".","#","O","P","G"]);
 
 const gridEl=document.querySelector("#mapGrid");
@@ -72,6 +73,9 @@ function persistStages(){
 }
 function setDirty(value=true){dirty=value;renderStageControls()}
 function setStatus(text){copyStatus.textContent=text}
+function hasAppliedStages(){
+  try{return localStorage.getItem(APPLIED_STAGES_KEY)!==null}catch{return false}
+}
 function showNotice(text){
   noticeMessage.textContent=text;
   noticeModal.hidden=false;
@@ -115,6 +119,7 @@ function renderStageControls(){
   document.querySelector("#deleteStageButton").disabled=!hasStages;
   document.querySelector("#moveStageEarlierButton").disabled=!hasStages||currentStageIndex<=0;
   document.querySelector("#moveStageLaterButton").disabled=!hasStages||currentStageIndex>=stages.length-1;
+  document.querySelector("#restoreBuiltInButton").disabled=!hasAppliedStages();
 }
 function validate(){
   const flat=map.flat(),players=flat.filter(v=>v==="P").length,goals=flat.filter(v=>v==="G").length;
@@ -236,6 +241,36 @@ function openAllStagesExport(){
   exportAllModal.hidden=false;
   document.querySelector("#copyAllStagesButton").focus();
 }
+function stagePlayError(stage,index){
+  if(!Array.isArray(stage)||!stage.length)return "Stage "+(index+1)+"에 맵 데이터가 없습니다.";
+  const width=stage[0]?.length??0;
+  if(!width||stage.some(row=>typeof row!=="string"||row.length!==width||!/^[.#OPG]+$/.test(row)))return "Stage "+(index+1)+"의 행 길이나 타일 표기가 올바르지 않습니다.";
+  const tiles=stage.join("");
+  if((tiles.match(/P/g)||[]).length!==1)return "Stage "+(index+1)+"에 시작점 P가 정확히 1개 있어야 합니다.";
+  if((tiles.match(/G/g)||[]).length!==1)return "Stage "+(index+1)+"에 출구 G가 정확히 1개 있어야 합니다.";
+  return null;
+}
+function applyStagesAndPlay(){
+  if(dirty)saveCurrentStage({silent:true});
+  if(!stages.length){showNotice("게임에 적용할 스테이지가 없습니다. 먼저 스테이지를 저장해 주세요.");return}
+  const error=stages.map(stagePlayError).find(Boolean);
+  if(error){showNotice(error+" 수정하고 저장한 뒤 다시 적용해 주세요.");return}
+  try{
+    localStorage.setItem(APPLIED_STAGES_KEY,JSON.stringify(stages));
+    location.href="index.html?source=editor";
+  }catch{
+    showNotice("브라우저 저장소에 스테이지를 적용하지 못했습니다.");
+  }
+}
+function restoreBuiltInStages(){
+  try{
+    localStorage.removeItem(APPLIED_STAGES_KEY);
+    renderStageControls();
+    showNotice("게임을 기본 스테이지로 복원했습니다. 에디터에 저장한 스테이지는 삭제되지 않았습니다.");
+  }catch{
+    showNotice("기본 스테이지로 복원하지 못했습니다.");
+  }
+}
 
 gridEl.addEventListener("pointerdown",event=>{
   if(event.button!==0&&event.button!==2)return;
@@ -272,6 +307,8 @@ document.querySelector("#deleteStageButton").addEventListener("click",deleteCurr
 document.querySelector("#moveStageEarlierButton").addEventListener("click",()=>moveCurrentStage(-1));
 document.querySelector("#moveStageLaterButton").addEventListener("click",()=>moveCurrentStage(1));
 document.querySelector("#exportAllStagesButton").addEventListener("click",openAllStagesExport);
+document.querySelector("#applyAndPlayButton").addEventListener("click",applyStagesAndPlay);
+document.querySelector("#restoreBuiltInButton").addEventListener("click",restoreBuiltInStages);
 document.querySelector("#previousStageButton").addEventListener("click",()=>navigateTo(currentStageIndex-1));
 document.querySelector("#nextStageButton").addEventListener("click",()=>navigateTo(currentStageIndex+1));
 document.querySelector("#goToStageButton").addEventListener("click",()=>navigateTo(Number(stageJumpInput.value)-1));
