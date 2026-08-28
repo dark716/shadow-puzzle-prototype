@@ -50,7 +50,7 @@
           <h2>그림자 스킬</h2>
           <button id="shadowButton" class="primary">그림자 생성 위치 선택</button>
           <button id="swapButton" disabled>그림자와 스왑</button>
-          <p>W: 생성 모드·위치 확정·스왑 / 방향키: 조준</p>
+          <p>W: 생성 모드·위치 확정·스왑 / 그림자 하나당 스왑 1회</p>
         </section>
 
         <section class="rules">
@@ -64,6 +64,17 @@
       </aside>
     </div>
   </main>
-  <script src="game.js?v=7"></script>
+  <div id="gameOverModal" class="game-over-modal" hidden>
+    <section class="game-over-card" role="dialog" aria-modal="true" aria-labelledby="gameOverTitle">
+      <p class="eyebrow">NO ROUTE REMAINS</p>
+      <h2 id="gameOverTitle">게임 오버</h2>
+      <p>현재 위치와 남은 그림자 행동으로는 출구에 도달할 수 없습니다.</p>
+      <div class="game-over-actions">
+        <button id="restartGameButton" class="primary">재시작</button>
+        <button id="endGameButton">종료</button>
+      </div>
+    </section>
+  </div>
+  <script src="game.js?v=8"></script>
 </body>
 </html>
