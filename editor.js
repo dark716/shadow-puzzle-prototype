@@ -26,22 +26,9 @@ function render(){
   gridEl.innerHTML="";
   gridEl.style.gridTemplateColumns="repeat("+map[0].length+", var(--cell))";
   map.forEach((row,y)=>row.forEach((value,x)=>{
-    const cell=document.createElement("button");
+    const cell=document.createElement("div");
     cell.className="cell";cell.dataset.value=value;cell.dataset.x=x;cell.dataset.y=y;cell.title=x+", "+y;
-    cell.addEventListener("pointerdown",e=>{
-      if(e.button!==0&&e.button!==2)return;
-      e.preventDefault();
-      canPlaceTile=true;
-      activePlacementType=e.button===0?currentTileType:floorTileType;
-      paint(x,y,activePlacementType);
-    });
-    cell.addEventListener("pointerenter",e=>{
-      const placementButtonHeld=e.buttons===1||e.buttons===2;
-      if(canPlaceTile&&placementButtonHeld)paint(x,y,activePlacementType);
-    });
-    cell.addEventListener("contextmenu",e=>{
-      e.preventDefault();
-    });
+    cell.setAttribute("role","gridcell");
     gridEl.append(cell);
   }));
   widthInput.value=map[0].length;heightInput.value=map.length;
@@ -52,6 +39,28 @@ function selectTile(value){
   currentTileType=value;
   document.querySelectorAll(".tile").forEach(button=>button.classList.toggle("active",button.dataset.tile===value));
 }
+function cellFromEvent(e){
+  const cell=e.target.closest(".cell");
+  return cell&&gridEl.contains(cell)?cell:null;
+}
+gridEl.addEventListener("pointerdown",e=>{
+  if(e.button!==0&&e.button!==2)return;
+  const cell=cellFromEvent(e);
+  if(!cell)return;
+  e.preventDefault();
+  canPlaceTile=true;
+  activePlacementType=e.button===0?currentTileType:floorTileType;
+  paint(Number(cell.dataset.x),Number(cell.dataset.y),activePlacementType);
+});
+gridEl.addEventListener("pointerover",e=>{
+  if(!canPlaceTile||(e.buttons!==1&&e.buttons!==2))return;
+  const cell=cellFromEvent(e);
+  if(!cell)return;
+  paint(Number(cell.dataset.x),Number(cell.dataset.y),activePlacementType);
+});
+gridEl.addEventListener("contextmenu",e=>{
+  e.preventDefault();
+});
 function paint(x,y,value){
   if(value==="P"||value==="G")map.forEach(row=>row.forEach((v,i)=>{if(v===value)row[i]="."}));
   map[y][x]=value;
