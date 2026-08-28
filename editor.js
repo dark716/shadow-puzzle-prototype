@@ -29,6 +29,11 @@ function render(){
     const cell=document.createElement("button");
     cell.className="cell";cell.dataset.value=value;cell.title=x+", "+y;
     cell.addEventListener("pointerdown",e=>{
+      if(e.button===2){
+        e.preventDefault();
+        paint(x,y,".");
+        return;
+      }
       if(e.button!==0)return;
       e.preventDefault();
       canPlaceTile=true;
