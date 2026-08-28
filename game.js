@@ -140,9 +140,9 @@ function render(){
   }));
   turnCount.textContent=state.turn;
   shadowTurns.textContent=state.shadow?state.shadowLife+"턴 · "+(state.swapUsed?"스왑 사용":"스왑 가능"):"없음";
-  shadowButton.disabled=!!state.shadow||state.cleared||state.gameOver;
+  shadowButton.disabled=state.cleared||state.gameOver;
   shadowButton.classList.toggle("active",state.selecting);
-  shadowButton.textContent=state.selecting?"보라색 칸을 선택하세요":"그림자 생성 위치 선택";
+  shadowButton.textContent=state.shadow?(state.swapUsed?"W · 스왑 완료":"W · 스왑"):state.selecting?"W · 위치 확정":"W · 그림자";
   cancelShadowButton.hidden=!state.selecting;
   cancelShadowButton.disabled=!state.selecting||state.gameOver;
   swapButton.disabled=!state.shadow||state.swapUsed||state.cleared||state.gameOver;
@@ -181,13 +181,18 @@ function loadStage(index){
 }
 function resetCurrentStage(){loadStage(currentStage)}
 function resetAllStages(){loadStage(0)}
-shadowButton.addEventListener("click",toggleShadowSelection);
+function shadowAction(){
+  if(state.shadow)swap();
+  else if(state.selecting)confirmShadow();
+  else toggleShadowSelection();
+}
+shadowButton.addEventListener("click",shadowAction);
 cancelShadowButton.addEventListener("click",()=>cancelShadowSelection());
 swapButton.addEventListener("click",swap);
 document.querySelectorAll("[data-move]").forEach(b=>b.addEventListener("click",()=>{const d={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[b.dataset.move];move(...d)}));
 document.addEventListener("keydown",e=>{
   if(e.key==="Escape"&&state.selecting){e.preventDefault();cancelShadowSelection();return}
-  if(e.key==="w"||e.key==="W"){e.preventDefault();if(state.shadow)swap();else if(state.selecting)confirmShadow();else toggleShadowSelection();return}
+  if(e.key==="w"||e.key==="W"){e.preventDefault();shadowAction();return}
   const d={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]}[e.key];
   if(d){e.preventDefault();if(state.selecting)moveCursor(...d);else move(...d)}
 });
