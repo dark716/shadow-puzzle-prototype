@@ -22,6 +22,18 @@ const STAGES=[
     "#........#O.#",
     "#........#.G#",
     "#############"
+  ],
+  [
+    "#############",
+    "#############",
+    "#############",
+    "#############",
+    "P...#.O...OO.",
+    "....######.OG",
+    "#############",
+    "#############",
+    "#############",
+    "#############"
   ]
 ];
 let MAP=[],currentStage=0,start=null,goal=null;
@@ -192,8 +204,7 @@ function loadStage(index){
   prepareStage(index);
   Object.assign(state,{player:{...start},shadow:null,shadowLife:0,swapUsed:false,turn:0,selecting:false,cursor:null,cleared:false,gameOver:false,transitioning:false});
   document.body.classList.remove("cleared");gameOverModal.hidden=true;
-  stageTitle.textContent="Stage "+(currentStage+1)+" — "+(currentStage===0?"장애물 장벽":"벽 너머의 그림자");
-  message.textContent=currentStage===0?"그림자를 이용해 장애물 장벽을 건너세요.":"복합 지형을 통과해 출구에 도달하세요.";
+  const stageNames=["장애물 장벽","벽 너머의 그림자","좁은 통로"];\n  const stageMessages=["그림자를 이용해 장애물 장벽을 건너세요.","복합 지형을 통과해 출구에 도달하세요.","막힌 통로에서 그림자 이동 경로를 찾으세요."];\n  stageTitle.textContent="Stage "+(currentStage+1)+" — "+stageNames[currentStage];\n  message.textContent=stageMessages[currentStage];
   render();
 }
 function resetCurrentStage(){loadStage(currentStage)}
