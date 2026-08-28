@@ -11,7 +11,7 @@
 .board-panel .game-over-card{margin:auto;transform:none}
 
 .board-panel .game-over-modal{background:#11182773;backdrop-filter:blur(2px)}
-.board-panel .game-over-card{width:calc(var(--cell)*4);height:calc(var(--cell)*3);min-width:0;padding:12px;display:flex;flex-direction:column;justify-content:center}
+.board-panel .game-over-card{width:calc(var(--cell)*6);height:calc(var(--cell)*4);min-width:0;padding:18px;display:flex;flex-direction:column;justify-content:center}
 .board-panel .game-over-card .eyebrow{display:none}
 .board-panel .game-over-card h2{margin:0 0 5px;font-size:clamp(1rem,calc(var(--cell)*.38),1.35rem)}
 .board-panel .game-over-card>p:not(.eyebrow){margin:0;color:var(--muted);font-size:clamp(.63rem,calc(var(--cell)*.18),.76rem);line-height:1.3}
