@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#11131a">
   <title>그림자 퍼즐 — Stage 1</title>
-  <link rel="stylesheet" href="style.css?v=7">
+  <link rel="stylesheet" href="style.css?v=8">
 </head>
 <body>
   <main class="app">
@@ -35,22 +35,18 @@
       </section>
 
       <aside class="controls">
-        <section>
-          <h2>이동</h2>
-          <div class="dpad">
-            <button data-move="up" aria-label="위로 이동">▲</button>
-            <button data-move="left" aria-label="왼쪽으로 이동">◀</button>
-            <button data-move="down" aria-label="아래로 이동">▼</button>
-            <button data-move="right" aria-label="오른쪽으로 이동">▶</button>
+        <section class="play-controls">
+          <h2>조작</h2>
+          <div class="control-pad">
+            <button class="move-up" data-move="up" aria-label="위로 이동">▲</button>
+            <button class="move-left" data-move="left" aria-label="왼쪽으로 이동">◀</button>
+            <button id="shadowButton" class="primary shadow-action" aria-label="그림자 행동">W · 그림자</button>
+            <button class="move-right" data-move="right" aria-label="오른쪽으로 이동">▶</button>
+            <button class="move-down" data-move="down" aria-label="아래로 이동">▼</button>
           </div>
-          <p>방향키 · 4방향 · 1턴</p>
-        </section>
-
-        <section>
-          <h2>그림자 스킬</h2>
-          <button id="shadowButton" class="primary">그림자 생성 위치 선택</button>\n          <button id="cancelShadowButton" class="cancel-shadow" hidden>생성 취소 (Esc)</button>
-          <button id="swapButton" disabled>그림자와 스왑</button>
-          <p>W: 생성·확정·스왑 / Esc: 생성 취소 / 불가능한 위치에서 W: 취소</p>
+          <button id="cancelShadowButton" class="cancel-shadow" hidden>생성 취소 (Esc)</button>
+          <button id="swapButton" hidden disabled aria-hidden="true">그림자와 스왑</button>
+          <p>방향 버튼: 이동·조준 / W: 생성·확정·스왑</p>
         </section>
 
         <section class="rules">
@@ -75,6 +71,6 @@
       </div>
     </section>
   </div>
-  <script src="game.js?v=12"></script>
+  <script src="game.js?v=13"></script>
 </body>
 </html>
