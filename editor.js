@@ -15,7 +15,7 @@ const output=document.querySelector("#mapOutput");
 const validation=document.querySelector("#validation");
 const widthInput=document.querySelector("#widthInput");
 const heightInput=document.querySelector("#heightInput");
-let map=SAMPLE.map(row=>[...row]),currentTileType=".",canPlaceTile=false;
+let map=SAMPLE.map(row=>[...row]),currentTileType=".",floorTileType=".",activePlacementType=".",canPlaceTile=false;
 
 function normalize(rows){
   const width=Math.max(...rows.map(r=>r.length));
@@ -29,30 +29,18 @@ function render(){
     const cell=document.createElement("button");
     cell.className="cell";cell.dataset.value=value;cell.dataset.x=x;cell.dataset.y=y;cell.title=x+", "+y;
     cell.addEventListener("pointerdown",e=>{
-      if(e.button===2){
-        e.preventDefault();
-        e.stopPropagation();
-        paint(x,y,".");
-        return;
-      }
-      if(e.button!==0)return;
+      if(e.button!==0&&e.button!==2)return;
       e.preventDefault();
       canPlaceTile=true;
-      paint(x,y,currentTileType);
+      activePlacementType=e.button===0?currentTileType:floorTileType;
+      paint(x,y,activePlacementType);
     });
-    cell.addEventListener("mousedown",e=>{
-      if(e.button!==2)return;
-      e.preventDefault();
-      e.stopPropagation();
-      paint(x,y,".");
+    cell.addEventListener("pointerenter",e=>{
+      const placementButtonHeld=e.buttons===1||e.buttons===2;
+      if(canPlaceTile&&placementButtonHeld)paint(x,y,activePlacementType);
     });
     cell.addEventListener("contextmenu",e=>{
       e.preventDefault();
-      e.stopPropagation();
-      paint(x,y,".");
-    });
-    cell.addEventListener("pointerenter",e=>{
-      if(canPlaceTile&&e.buttons===1)paint(x,y,currentTileType);
     });
     gridEl.append(cell);
   }));
