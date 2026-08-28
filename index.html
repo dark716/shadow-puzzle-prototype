@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#11131a">
+  <title>그림자 퍼즐 — Stage 1</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <header>
+      <div>
+        <p class="eyebrow">SHADOW PUZZLE · PROTOTYPE</p>
+        <h1>Stage 1 — 벽 너머의 그림자</h1>
+      </div>
+      <button id="resetButton" class="ghost">처음부터</button>
+    </header>
+
+    <section class="status" aria-live="polite">
+      <div><span>턴</span><strong id="turnCount">0</strong></div>
+      <div><span>그림자</span><strong id="shadowTurns">없음</strong></div>
+      <div class="message" id="message">걸어서는 나갈 수 없습니다. 그림자를 만들어 보세요.</div>
+    </section>
+
+    <div class="layout">
+      <section class="board-panel">
+        <div id="board" class="board" role="grid" aria-label="Stage 1 격자"></div>
+        <div class="legend">
+          <span><i class="player-dot"></i>본체</span>
+          <span><i class="shadow-dot"></i>그림자</span>
+          <span><i class="obstacle-dot"></i>장애물</span>
+          <span><i class="goal-dot"></i>출구</span>
+        </div>
+      </section>
+
+      <aside class="controls">
+        <section>
+          <h2>이동</h2>
+          <div class="dpad">
+            <button data-move="up" aria-label="위로 이동">▲</button>
+            <button data-move="left" aria-label="왼쪽으로 이동">◀</button>
+            <button data-move="down" aria-label="아래로 이동">▼</button>
+            <button data-move="right" aria-label="오른쪽으로 이동">▶</button>
+          </div>
+          <p>방향키 또는 WASD · 4방향 · 1턴</p>
+        </section>
+
+        <section>
+          <h2>그림자 스킬</h2>
+          <button id="shadowButton" class="primary">그림자 생성 위치 선택</button>
+          <button id="swapButton" disabled>그림자와 스왑</button>
+          <p>체비쇼프 거리 정확히 2 · 생성과 스왑 각각 1턴</p>
+        </section>
+
+        <section class="rules">
+          <h2>이번 스테이지에서 확인할 것</h2>
+          <ul>
+            <li>중간에 벽이 있어도 그림자를 만들 수 있습니다.</li>
+            <li>도착 칸이 벽이나 장애물이면 만들 수 없습니다.</li>
+            <li>그림자는 생성 후 6턴 동안 유지됩니다.</li>
+          </ul>
+        </section>
+      </aside>
+    </div>
+  </main>
+  <script src="game.js"></script>
+</body>
+</html>
