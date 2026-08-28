@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#11131a">
+  <title>그림자 퍼즐 — 맵 에디터</title>
+  <link rel="stylesheet" href="editor.css">
+</head>
+<body>
+  <main class="editor-app">
+    <header>
+      <div>
+        <p class="eyebrow">SHADOW PUZZLE · TOOL</p>
+        <h1>Stage 맵 에디터</h1>
+        <p class="subtitle">타일을 골라 격자에 그린 뒤, 맵 코드를 복사해서 대화에 붙여 주세요.</p>
+      </div>
+      <a class="back" href="index.html">Stage 1 플레이</a>
+    </header>
+
+    <section class="toolbar">
+      <div class="size-control">
+        <label>가로 <input id="widthInput" type="number" min="5" max="30" value="13"></label>
+        <label>세로 <input id="heightInput" type="number" min="5" max="30" value="10"></label>
+        <button id="resizeButton">크기 적용</button>
+      </div>
+      <div class="actions">
+        <button id="clearButton">전부 바닥</button>
+        <button id="borderButton">테두리 벽</button>
+        <button id="sampleButton">Stage 1 불러오기</button>
+      </div>
+    </section>
+
+    <div class="workspace">
+      <aside class="palette">
+        <h2>타일</h2>
+        <button class="tile active" data-tile="."><i class="floor"></i><span>바닥<small>.</small></span></button>
+        <button class="tile" data-tile="#"><i class="wall"></i><span>벽<small>#</small></span></button>
+        <button class="tile" data-tile="O"><i class="obstacle"></i><span>장애물<small>O</small></span></button>
+        <button class="tile" data-tile="P"><i class="player">P</i><span>시작점<small>P · 1개</small></span></button>
+        <button class="tile" data-tile="G"><i class="goal">✦</i><span>출구<small>G · 1개</small></span></button>
+        <p class="hint">클릭하거나 누른 채로 드래그하세요. 오른쪽 클릭은 바닥으로 지웁니다.</p>
+      </aside>
+
+      <section class="canvas-panel">
+        <div id="mapGrid" class="map-grid" aria-label="맵 편집 격자"></div>
+        <div id="validation" class="validation" aria-live="polite"></div>
+      </section>
+
+      <aside class="export-panel">
+        <h2>맵 코드</h2>
+        <p>아래 내용을 복사해 이 대화에 붙이면 제가 그대로 구현할 수 있습니다.</p>
+        <textarea id="mapOutput" spellcheck="false" aria-label="맵 코드"></textarea>
+        <div class="export-actions">
+          <button id="copyButton" class="primary">맵 코드 복사</button>
+          <button id="importButton">코드에서 불러오기</button>
+        </div>
+        <p id="copyStatus" class="copy-status"></p>
+        <details>
+          <summary>표기법</summary>
+          <code>. 바닥<br># 벽<br>O 장애물<br>P 시작점<br>G 출구</code>
+        </details>
+      </aside>
+    </div>
+  </main>
+  <script src="editor.js"></script>
+</body>
+</html>
