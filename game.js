@@ -130,7 +130,16 @@ function render(){
   MAP.forEach((row,y)=>[...row].forEach((_,x)=>{
     const el=document.createElement("button");el.className="cell";el.setAttribute("role","gridcell");el.setAttribute("aria-label",x+", "+y);
     const k=key(x,y);
-    if(walls.has(k))el.classList.add("wall");else if(obstacles.has(k))el.classList.add("obstacle");
+    if(walls.has(k))el.classList.add("wall");
+    else if(obstacles.has(k)){
+      el.classList.add("obstacle");
+      const obstacleSprite=document.createElement("img");
+      obstacleSprite.className="entity-sprite obstacle-sprite";
+      obstacleSprite.src="assets/obstacle.png?v=1";
+      obstacleSprite.alt="장애물";
+      obstacleSprite.draggable=false;
+      el.append(obstacleSprite);
+    }
     if(goal.x===x&&goal.y===y)el.classList.add("goal");
     if(valid.has(k))el.classList.add("candidate");else if(ring.has(k))el.classList.add("invalid");
     if(state.shadow&&state.shadow.x===x&&state.shadow.y===y){
