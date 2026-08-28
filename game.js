@@ -189,7 +189,7 @@ function shadowAction(){
 shadowButton.addEventListener("click",shadowAction);
 cancelShadowButton.addEventListener("click",()=>cancelShadowSelection());
 swapButton.addEventListener("click",swap);
-document.querySelectorAll("[data-move]").forEach(b=>b.addEventListener("click",()=>{const d={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[b.dataset.move];move(...d)}));
+document.querySelectorAll("[data-move]").forEach(b=>b.addEventListener("click",()=>{const d={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[b.dataset.move];if(state.selecting)moveCursor(...d);else move(...d)}));
 document.addEventListener("keydown",e=>{
   if(e.key==="Escape"&&state.selecting){e.preventDefault();cancelShadowSelection();return}
   if(e.key==="w"||e.key==="W"){e.preventDefault();shadowAction();return}
