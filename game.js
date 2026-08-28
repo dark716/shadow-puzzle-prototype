@@ -1,25 +1,47 @@
-const MAP=[
-"#############",
-"#...#.......#",
-"#.P.###.....#",
-"#...#.#.....#",
-"#####O#..####",
-"#####.####O.#",
-"#........####",
-"#........#O.#",
-"#........#.G#",
-"#############"
+const STAGES=[
+  [
+    "#############",
+    "#.....O.....#",
+    "#.....O.....#",
+    "#.....O.....#",
+    "#.P...O...G.#",
+    "#.....O.....#",
+    "#.....O.....#",
+    "#.....O.....#",
+    "#.....O.....#",
+    "#############"
+  ],
+  [
+    "#############",
+    "#...#.......#",
+    "#.P.###.....#",
+    "#...#.#.....#",
+    "#####O#..####",
+    "#####.####O.#",
+    "#........####",
+    "#........#O.#",
+    "#........#.G#",
+    "#############"
+  ]
 ];
-const state={player:null,shadow:null,shadowLife:0,swapUsed:false,turn:0,selecting:false,cursor:null,cleared:false,gameOver:false};
+let MAP=[],currentStage=0,start=null,goal=null;
+let walls=new Set(),obstacles=new Set();
+const state={player:null,shadow:null,shadowLife:0,swapUsed:false,turn:0,selecting:false,cursor:null,cleared:false,gameOver:false,transitioning:false};
 const board=document.querySelector("#board"),message=document.querySelector("#message");
 const turnCount=document.querySelector("#turnCount"),shadowTurns=document.querySelector("#shadowTurns");
 const shadowButton=document.querySelector("#shadowButton"),cancelShadowButton=document.querySelector("#cancelShadowButton"),swapButton=document.querySelector("#swapButton");
-const gameOverModal=document.querySelector("#gameOverModal");
+const gameOverModal=document.querySelector("#gameOverModal"),stageTitle=document.querySelector("#stageTitle");
 document.querySelector(".board-panel").append(gameOverModal);
 const key=(x,y)=>x+","+y;
-const walls=new Set(),obstacles=new Set();let goal;
-MAP.forEach((row,y)=>[...row].forEach((v,x)=>{if(v==="#")walls.add(key(x,y));if(v==="O")obstacles.add(key(x,y));if(v==="P")state.player={x,y};if(v==="G")goal={x,y}}));
-const start={...state.player};
+function prepareStage(index){
+  currentStage=index;MAP=STAGES[index];walls=new Set();obstacles=new Set();goal=null;start=null;
+  MAP.forEach((row,y)=>[...row].forEach((v,x)=>{
+    if(v==="#")walls.add(key(x,y));
+    if(v==="O")obstacles.add(key(x,y));
+    if(v==="P")start={x,y};
+    if(v==="G")goal={x,y};
+  }));
+}
 function blocked(x,y){return x<0||y<0||y>=MAP.length||x>=MAP[0].length||walls.has(key(x,y))||obstacles.has(key(x,y))}
 function ringFrom(player){const out=[];for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)if(Math.max(Math.abs(dx),Math.abs(dy))===2)out.push({x:player.x+dx,y:player.y+dy});return out}
 function candidates(){return ringFrom(state.player)}
@@ -54,7 +76,7 @@ function canStillReachGoal(){
 function showGameOver(){
   state.gameOver=true;state.selecting=false;state.cursor=null;
   message.textContent="현재 상태에서는 더 이상 출구에 도달할 수 없습니다.";
-  gameOverModal.hidden=false;render();
+  gameOverModal.hidden=false;loadStage(0);
 }
 function evaluateState(){
   if(!state.cleared&&!state.gameOver&&!canStillReachGoal())showGameOver();
@@ -68,9 +90,16 @@ function spendTurn(skipDecay=false){
   checkGoal();render();evaluateState();
 }
 function checkGoal(){
-  if(state.player.x===goal.x&&state.player.y===goal.y){
-    state.cleared=true;state.selecting=false;state.cursor=null;
-    message.textContent="Stage 1 클리어!";document.body.classList.add("cleared");
+  if(state.player.x!==goal.x||state.player.y!==goal.y||state.transitioning)return;
+  state.cleared=true;state.selecting=false;state.cursor=null;
+  if(currentStage<STAGES.length-1){
+    state.transitioning=true;
+    message.textContent="Stage "+(currentStage+1)+" 클리어! 잠시 후 다음 스테이지로 이동합니다.";
+    document.body.classList.add("cleared");
+    setTimeout(()=>loadStage(currentStage+1),1000);
+  }else{
+    message.textContent="모든 스테이지 클리어!";
+    document.body.classList.add("cleared");
   }
 }
 function move(dx,dy){
@@ -142,11 +171,16 @@ function confirmShadow(){
   if(blocked(x,y)){cancelShadowSelection("벽이나 장애물이 있는 위치라 그림자 생성을 취소했습니다.");return}
   createShadow(x,y);
 }
-function resetGame(){
-  Object.assign(state,{player:{...start},shadow:null,shadowLife:0,swapUsed:false,turn:0,selecting:false,cursor:null,cleared:false,gameOver:false});
+function loadStage(index){
+  prepareStage(index);
+  Object.assign(state,{player:{...start},shadow:null,shadowLife:0,swapUsed:false,turn:0,selecting:false,cursor:null,cleared:false,gameOver:false,transitioning:false});
   document.body.classList.remove("cleared");gameOverModal.hidden=true;
-  message.textContent="걸어서는 나갈 수 없습니다. 그림자를 만들어 보세요.";render();
+  stageTitle.textContent="Stage "+(currentStage+1)+" — "+(currentStage===0?"장애물 장벽":"벽 너머의 그림자");
+  message.textContent=currentStage===0?"그림자를 이용해 장애물 장벽을 건너세요.":"복합 지형을 통과해 출구에 도달하세요.";
+  render();
 }
+function resetCurrentStage(){loadStage(currentStage)}
+function resetAllStages(){loadStage(0)}
 shadowButton.addEventListener("click",toggleShadowSelection);
 cancelShadowButton.addEventListener("click",()=>cancelShadowSelection());
 swapButton.addEventListener("click",swap);
@@ -157,7 +191,7 @@ document.addEventListener("keydown",e=>{
   const d={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]}[e.key];
   if(d){e.preventDefault();if(state.selecting)moveCursor(...d);else move(...d)}
 });
-document.querySelector("#resetButton").addEventListener("click",resetGame);
-document.querySelector("#restartGameButton").addEventListener("click",resetGame);
+document.querySelector("#resetButton").addEventListener("click",resetAllStages);
+document.querySelector("#restartGameButton").addEventListener("click",resetCurrentStage);
 document.querySelector("#endGameButton").addEventListener("click",()=>{gameOverModal.hidden=true;message.textContent="게임을 종료했습니다. ‘처음부터’를 누르면 다시 시작할 수 있습니다.";render()});
-render();
+loadStage(0);
