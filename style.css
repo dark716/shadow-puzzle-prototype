@@ -57,3 +57,11 @@
 .cell.shadow:before{display:none!important;content:none!important}
 .cell .entity-sprite{position:absolute;inset:3%;width:94%;height:94%;object-fit:contain;z-index:2;pointer-events:none;user-select:none;image-rendering:pixelated}
 .cell .shadow-sprite{filter:drop-shadow(0 2px 5px #32105ccc)}
+
+/* Brighter, more saturated stage palette. */
+.board{background:#236879;border-color:#9ad9dc}
+.cell{background:#58aeb2;border-color:#82c8ca}
+.cell.wall{background:linear-gradient(145deg,#4d8191,#285666);box-shadow:inset 0 0 0 2px #69a0ad}
+.cell.goal{background:radial-gradient(circle,#ffe07abf,#58aeb2 68%)}
+.cell.candidate{background:#8069cf;border-color:#ad9bea}
+.cell.invalid{background:#765763;border-color:#9b7883}
