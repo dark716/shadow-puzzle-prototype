@@ -299,8 +299,8 @@ function animatePlayerMove(from,to,facing){
   return new Promise(resolve=>{
     const started=performance.now();
     function tick(now){
-      const progress=Math.min(1,(now-started)/duration(180));
-      const eased=1-Math.pow(1-progress,3);
+      const progress=Math.min(1,(now-started)/duration(220));
+      const eased=progress;
       const walkFrames=[0,1,0,2];
       setSheetFrame(actor,walkFrames[Math.min(3,Math.floor(progress*4))],DIRECTION_ROWS[facing]);
       actor.style.transform=`translate(${distanceX*eased}px,${distanceY*eased}px)`;
