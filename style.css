@@ -87,3 +87,21 @@ button:hover:not(:disabled),.nav-link:hover{border-color:#638892}
 
 html,body{background:transparent!important}
 .board-panel{background:transparent!important;box-shadow:none!important}
+
+/* Restore the light page and board panel backgrounds. */
+html{background:#c9dde2!important}
+body{background:radial-gradient(circle at 50% -20%,#ffffff 0,#dcecef 48%,#c9dde2 100%)!important}
+.board-panel{background:#e4f2f3!important;box-shadow:0 12px 35px #56768026!important}
+
+/* Explicit render order: player > shadow > goal > obstacle > wall > floor. */
+.cell{position:relative;z-index:1}
+.cell.wall{z-index:2}
+.cell.obstacle{z-index:3}
+.cell.goal{z-index:4}
+.cell.shadow{z-index:5}
+.cell.player{z-index:6}
+.cell.obstacle:before{z-index:31}
+.cell.goal:after{z-index:41}
+.cell .shadow-sprite{z-index:51}
+.cell.player:after{z-index:61}
+.cell.target-cursor{z-index:7}
