@@ -27,13 +27,8 @@ function render(){
   gridEl.style.gridTemplateColumns="repeat("+map[0].length+", var(--cell))";
   map.forEach((row,y)=>row.forEach((value,x)=>{
     const cell=document.createElement("button");
-    cell.className="cell";cell.dataset.value=value;cell.title=x+", "+y;
+    cell.className="cell";cell.dataset.value=value;cell.dataset.x=x;cell.dataset.y=y;cell.title=x+", "+y;
     cell.addEventListener("pointerdown",e=>{
-      if(e.button===2){
-        e.preventDefault();
-        paint(x,y,".");
-        return;
-      }
       if(e.button!==0)return;
       e.preventDefault();
       canPlaceTile=true;
@@ -42,7 +37,6 @@ function render(){
     cell.addEventListener("pointerenter",e=>{
       if(canPlaceTile&&e.buttons===1)paint(x,y,currentTileType);
     });
-    cell.addEventListener("contextmenu",e=>{e.preventDefault()});
     gridEl.append(cell);
   }));
   widthInput.value=map[0].length;heightInput.value=map.length;
@@ -72,6 +66,15 @@ function validate(){
   validation.textContent=notes.length?notes.join(" "):"기본 검사를 통과했습니다. 맵 코드를 복사해도 좋습니다.";
 }
 document.querySelectorAll(".tile").forEach(btn=>btn.addEventListener("click",()=>selectTile(btn.dataset.tile)));
+gridEl.addEventListener("contextmenu",e=>{
+  e.preventDefault();
+  const pointedElement=document.elementFromPoint(e.clientX,e.clientY);
+  const cell=pointedElement?.closest(".cell");
+  if(!cell||!gridEl.contains(cell))return;
+  const x=Number(cell.dataset.x);
+  const y=Number(cell.dataset.y);
+  if(Number.isInteger(x)&&Number.isInteger(y))paint(x,y,".");
+});
 document.addEventListener("pointerup",()=>{
   canPlaceTile=false;
 });
