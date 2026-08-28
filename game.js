@@ -13,7 +13,7 @@ const MAP=[
 const state={player:null,shadow:null,shadowLife:0,swapUsed:false,turn:0,selecting:false,cursor:null,cleared:false,gameOver:false};
 const board=document.querySelector("#board"),message=document.querySelector("#message");
 const turnCount=document.querySelector("#turnCount"),shadowTurns=document.querySelector("#shadowTurns");
-const shadowButton=document.querySelector("#shadowButton"),swapButton=document.querySelector("#swapButton");
+const shadowButton=document.querySelector("#shadowButton"),cancelShadowButton=document.querySelector("#cancelShadowButton"),swapButton=document.querySelector("#swapButton");
 const gameOverModal=document.querySelector("#gameOverModal");
 document.querySelector(".board-panel").append(gameOverModal);
 const key=(x,y)=>x+","+y;
@@ -114,13 +114,19 @@ function render(){
   shadowButton.disabled=!!state.shadow||state.cleared||state.gameOver;
   shadowButton.classList.toggle("active",state.selecting);
   shadowButton.textContent=state.selecting?"보라색 칸을 선택하세요":"그림자 생성 위치 선택";
+  cancelShadowButton.hidden=!state.selecting;
+  cancelShadowButton.disabled=!state.selecting||state.gameOver;
   swapButton.disabled=!state.shadow||state.swapUsed||state.cleared||state.gameOver;
   swapButton.textContent=state.swapUsed?"스왑 사용 완료":"그림자와 스왑";
 }
+function cancelShadowSelection(reason="그림자 생성을 취소했습니다."){
+  state.selecting=false;state.cursor=null;message.textContent=reason;render();
+}
 function toggleShadowSelection(){
   if(state.shadow||state.cleared||state.gameOver)return;
-  state.selecting=!state.selecting;state.cursor=state.selecting?{...state.player}:null;
-  message.textContent=state.selecting?"방향키로 빈 네모를 옮긴 뒤 W를 누르세요.":"그림자 선택을 취소했습니다.";render();
+  if(state.selecting){cancelShadowSelection();return}
+  state.selecting=true;state.cursor={...state.player};
+  message.textContent="방향키로 빈 네모를 옮긴 뒤 W를 누르세요. Esc로 취소할 수 있습니다.";render();
 }
 function moveCursor(dx,dy){
   if(!state.cursor)return;
@@ -132,8 +138,8 @@ function moveCursor(dx,dy){
 function confirmShadow(){
   if(!state.selecting||!state.cursor||state.shadow)return;
   const {x,y}=state.cursor;
-  if(!candidates().some(p=>p.x===x&&p.y===y)){message.textContent="그림자는 체비쇼프 거리 정확히 2인 칸에만 생성할 수 있습니다.";render();return}
-  if(blocked(x,y)){message.textContent="목적지가 벽이나 장애물이어서 생성할 수 없습니다.";render();return}
+  if(!candidates().some(p=>p.x===x&&p.y===y)){cancelShadowSelection("생성 범위를 벗어나 그림자 생성을 취소했습니다.");return}
+  if(blocked(x,y)){cancelShadowSelection("벽이나 장애물이 있는 위치라 그림자 생성을 취소했습니다.");return}
   createShadow(x,y);
 }
 function resetGame(){
@@ -142,9 +148,11 @@ function resetGame(){
   message.textContent="걸어서는 나갈 수 없습니다. 그림자를 만들어 보세요.";render();
 }
 shadowButton.addEventListener("click",toggleShadowSelection);
+cancelShadowButton.addEventListener("click",()=>cancelShadowSelection());
 swapButton.addEventListener("click",swap);
 document.querySelectorAll("[data-move]").forEach(b=>b.addEventListener("click",()=>{const d={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[b.dataset.move];move(...d)}));
 document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"&&state.selecting){e.preventDefault();cancelShadowSelection();return}
   if(e.key==="w"||e.key==="W"){e.preventDefault();if(state.shadow)swap();else if(state.selecting)confirmShadow();else toggleShadowSelection();return}
   const d={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]}[e.key];
   if(d){e.preventDefault();if(state.selecting)moveCursor(...d);else move(...d)}
