@@ -133,7 +133,15 @@ function render(){
     if(walls.has(k))el.classList.add("wall");else if(obstacles.has(k))el.classList.add("obstacle");
     if(goal.x===x&&goal.y===y)el.classList.add("goal");
     if(valid.has(k))el.classList.add("candidate");else if(ring.has(k))el.classList.add("invalid");
-    if(state.shadow&&state.shadow.x===x&&state.shadow.y===y)el.classList.add("shadow");
+    if(state.shadow&&state.shadow.x===x&&state.shadow.y===y){
+      el.classList.add("shadow");
+      const sprite=document.createElement("img");
+      sprite.className="entity-sprite shadow-sprite";
+      sprite.src="assets/shadow.png?v=2";
+      sprite.alt="그림자";
+      sprite.draggable=false;
+      el.append(sprite);
+    }
     if(state.cursor&&state.cursor.x===x&&state.cursor.y===y)el.classList.add("target-cursor");
     if(state.player.x===x&&state.player.y===y)el.classList.add("player");
     el.disabled=!valid.has(k);if(valid.has(k))el.addEventListener("click",()=>createShadow(x,y));board.append(el);
