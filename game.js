@@ -152,7 +152,15 @@ function render(){
       obstacleSprite.draggable=false;
       el.append(obstacleSprite);
     }
-    if(goal.x===x&&goal.y===y)el.classList.add("goal");
+    if(goal.x===x&&goal.y===y){
+      el.classList.add("goal");
+      const goalSprite=document.createElement("img");
+      goalSprite.className="entity-sprite goal-sprite";
+      goalSprite.src="assets/goal.png?v=1";
+      goalSprite.alt="출구";
+      goalSprite.draggable=false;
+      el.append(goalSprite);
+    }
     if(valid.has(k))el.classList.add("candidate");else if(ring.has(k))el.classList.add("invalid");
     if(state.shadow&&state.shadow.x===x&&state.shadow.y===y){
       el.classList.add("shadow");
