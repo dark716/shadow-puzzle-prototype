@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#11131a">
   <title>그림자 퍼즐 — 맵 에디터</title>
-  <link rel="stylesheet" href="editor.css">
+  <link rel="stylesheet" href="editor-v11.css">
 </head>
 <body>
   <main class="editor-app">
@@ -13,10 +13,33 @@
       <div>
         <p class="eyebrow">SHADOW PUZZLE · TOOL</p>
         <h1>Stage 맵 에디터</h1>
-        <p class="subtitle">타일을 골라 격자에 그린 뒤, 맵 코드를 복사해서 대화에 붙여 주세요.</p>
+        <p class="subtitle">여러 스테이지를 만들고 순서를 정한 뒤 브라우저에 저장할 수 있습니다.</p>
       </div>
-      <a class="back" href="index.html">Stage 1 플레이</a>
+      <a class="back" href="index.html">게임 플레이</a>
     </header>
+
+    <section class="stage-manager" aria-label="스테이지 관리">
+      <div class="stage-location">
+        <strong id="stagePosition">저장된 스테이지 없음</strong>
+        <span id="saveState">기본 맵을 편집 중입니다.</span>
+      </div>
+      <div class="stage-navigation">
+        <button id="previousStageButton" aria-label="이전 스테이지">← 이전</button>
+        <label>Stage
+          <input id="stageJumpInput" type="number" min="1" value="1" inputmode="numeric">
+        </label>
+        <button id="goToStageButton">이동</button>
+        <button id="nextStageButton" aria-label="다음 스테이지">다음 →</button>
+      </div>
+      <div class="stage-actions">
+        <button id="addStageButton">＋ 스테이지 추가</button>
+        <button id="saveStageButton" class="primary">현재 스테이지 저장</button>
+        <button id="deleteStageButton" class="danger">삭제</button>
+        <button id="moveStageEarlierButton">순서 앞으로</button>
+        <button id="moveStageLaterButton">순서 뒤로</button>
+        <button id="exportAllStagesButton">전체 스테이지 내보내기</button>
+      </div>
+    </section>
 
     <section class="toolbar">
       <div class="size-control">
@@ -27,7 +50,7 @@
       <div class="actions">
         <button id="clearButton">전부 바닥</button>
         <button id="borderButton">테두리 벽</button>
-        <button id="sampleButton">Stage 1 불러오기</button>
+        <button id="sampleButton">기본 맵 불러오기</button>
       </div>
     </section>
 
@@ -49,13 +72,13 @@
 
       <aside class="export-panel">
         <h2>맵 코드</h2>
-        <p>아래 내용을 복사해 이 대화에 붙이면 제가 그대로 구현할 수 있습니다.</p>
+        <p>현재 스테이지의 코드를 복사하거나 외부에서 만든 코드를 불러올 수 있습니다.</p>
         <textarea id="mapOutput" spellcheck="false" aria-label="맵 코드"></textarea>
         <div class="export-actions">
           <button id="copyButton" class="primary">맵 코드 복사</button>
           <button id="importButton">코드에서 불러오기</button>
         </div>
-        <p id="copyStatus" class="copy-status"></p>
+        <p id="copyStatus" class="copy-status" aria-live="polite"></p>
         <details>
           <summary>표기법</summary>
           <code>. 바닥<br># 벽<br>O 장애물<br>P 시작점<br>G 출구</code>
@@ -63,6 +86,24 @@
       </aside>
     </div>
   </main>
-  <script src="editor.js?v=10"></script>
+  <div id="noticeModal" class="modal-backdrop" hidden>
+    <section class="modal-card notice-card" role="dialog" aria-modal="true" aria-labelledby="noticeTitle">
+      <h2 id="noticeTitle">스테이지 안내</h2>
+      <p id="noticeMessage"></p>
+      <button id="closeNoticeButton" class="primary">확인</button>
+    </section>
+  </div>
+  <div id="exportAllModal" class="modal-backdrop" hidden>
+    <section class="modal-card export-all-card" role="dialog" aria-modal="true" aria-labelledby="exportAllTitle">
+      <h2 id="exportAllTitle">전체 스테이지 내보내기</h2>
+      <p>아래 코드는 저장된 스테이지 순서를 그대로 반영한 게임용 <code>STAGES</code> 배열입니다.</p>
+      <textarea id="allStagesOutput" spellcheck="false" readonly aria-label="전체 스테이지 코드"></textarea>
+      <div class="modal-actions">
+        <button id="copyAllStagesButton" class="primary">전체 코드 복사</button>
+        <button id="closeExportAllButton">닫기</button>
+      </div>
+    </section>
+  </div>
+  <script src="editor-v11.js"></script>
 </body>
 </html>
