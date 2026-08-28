@@ -1,4 +1,4 @@
-const STAGES=[
+const BUILT_IN_STAGES=[
   [
     "#############",
     "#....OO.....#",
@@ -36,6 +36,24 @@ const STAGES=[
     "#############"
   ]
 ];
+const APPLIED_STAGES_KEY="shadowPuzzleAppliedStages";
+function validAppliedStage(stage){
+  if(!Array.isArray(stage)||!stage.length)return false;
+  const width=stage[0]?.length??0;
+  if(!width||stage.some(row=>typeof row!=="string"||row.length!==width||!/^[.#OPG]+$/.test(row)))return false;
+  const tiles=stage.join("");
+  return (tiles.match(/P/g)||[]).length===1&&(tiles.match(/G/g)||[]).length===1;
+}
+function readAppliedStages(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(APPLIED_STAGES_KEY));
+    if(!Array.isArray(saved)||!saved.length||!saved.every(validAppliedStage))return null;
+    return saved.map(stage=>[...stage]);
+  }catch{return null}
+}
+const appliedStages=readAppliedStages();
+const USING_EDITOR_STAGES=Boolean(appliedStages);
+const STAGES=appliedStages??BUILT_IN_STAGES;
 let MAP=[],currentStage=0,start=null,goal=null;
 let walls=new Set(),obstacles=new Set();
 const state={player:null,shadow:null,shadowLife:0,swapUsed:false,turn:0,selecting:false,cursor:null,cleared:false,gameOver:false,transitioning:false};
@@ -43,7 +61,9 @@ const board=document.querySelector("#board"),message=document.querySelector("#me
 const turnCount=document.querySelector("#turnCount"),shadowTurns=document.querySelector("#shadowTurns");
 const shadowButton=document.querySelector("#shadowButton"),cancelShadowButton=document.querySelector("#cancelShadowButton"),swapButton=document.querySelector("#swapButton");
 const gameOverModal=document.querySelector("#gameOverModal"),stageTitle=document.querySelector("#stageTitle");
+const restoreStagesButton=document.querySelector("#restoreStagesButton");
 document.querySelector(".board-panel").append(gameOverModal);
+restoreStagesButton.hidden=!USING_EDITOR_STAGES;
 const key=(x,y)=>x+","+y;
 function prepareStage(index){
   currentStage=index;MAP=STAGES[index];walls=new Set();obstacles=new Set();goal=null;start=null;
@@ -214,8 +234,8 @@ function loadStage(index){
   document.body.classList.remove("cleared");gameOverModal.hidden=true;
   const stageNames=["장애물 장벽","두 번의 도약","좁은 통로"];
   const stageMessages=["그림자를 이용해 장애물 장벽을 건너세요.","그림자의 수명을 활용해 두 겹의 벽을 건너세요.","막힌 통로에서 그림자 이동 경로를 찾으세요."];
-  stageTitle.textContent="Stage "+(currentStage+1)+" — "+stageNames[currentStage];
-  message.textContent=stageMessages[currentStage];
+  stageTitle.textContent="Stage "+(currentStage+1)+" — "+(USING_EDITOR_STAGES?"에디터 스테이지":stageNames[currentStage]??"퍼즐");
+  message.textContent=USING_EDITOR_STAGES?"에디터에서 적용한 스테이지입니다.":stageMessages[currentStage]??"출구에 도달하세요.";
   render();
 }
 function resetCurrentStage(){loadStage(currentStage)}
@@ -238,4 +258,8 @@ document.addEventListener("keydown",e=>{
 document.querySelector("#resetButton").addEventListener("click",resetAllStages);
 document.querySelector("#restartGameButton").addEventListener("click",resetCurrentStage);
 document.querySelector("#endGameButton").addEventListener("click",()=>{gameOverModal.hidden=true;message.textContent="게임을 종료했습니다. ‘처음부터’를 누르면 다시 시작할 수 있습니다.";render()});
+restoreStagesButton.addEventListener("click",()=>{
+  localStorage.removeItem(APPLIED_STAGES_KEY);
+  location.href="index.html";
+});
 loadStage(0);
