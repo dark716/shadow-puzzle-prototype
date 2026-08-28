@@ -32,6 +32,20 @@ function render(){board.innerHTML="";const valid=new Set(state.selecting&&!state
 shadowButton.addEventListener("click",()=>{if(state.shadow)return;state.selecting=!state.selecting;message.textContent=state.selecting?"보라색 칸은 정확히 2칸 떨어진 빈 목적지입니다.":"그림자 선택을 취소했습니다.";render()});
 swapButton.addEventListener("click",swap);
 document.querySelectorAll("[data-move]").forEach(b=>b.addEventListener("click",()=>{const d={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[b.dataset.move];move(...d)}));
-document.addEventListener("keydown",e=>{const d={ArrowUp:[0,-1],w:[0,-1],W:[0,-1],ArrowDown:[0,1],s:[0,1],S:[0,1],ArrowLeft:[-1,0],a:[-1,0],A:[-1,0],ArrowRight:[1,0],d:[1,0],D:[1,0]}[e.key];if(d){e.preventDefault();move(...d)}});
+document.addEventListener("keydown",e=>{
+  if(e.key==="w"||e.key==="W"){
+    e.preventDefault();
+    if(state.shadow){
+      swap();
+    }else if(!state.cleared){
+      state.selecting=!state.selecting;
+      message.textContent=state.selecting?"보라색 칸은 정확히 2칸 떨어진 빈 목적지입니다.":"그림자 선택을 취소했습니다.";
+      render();
+    }
+    return;
+  }
+  const d={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]}[e.key];
+  if(d){e.preventDefault();move(...d)}
+});
 document.querySelector("#resetButton").addEventListener("click",()=>{Object.assign(state,{player:{...start},shadow:null,shadowLife:0,turn:0,selecting:false,cleared:false});document.body.classList.remove("cleared");message.textContent="걸어서는 나갈 수 없습니다. 그림자를 만들어 보세요.";render()});
 render();
