@@ -198,8 +198,16 @@ function createEffect(position,sheet,columns=6){
   setSheetFrame(effect,0,0,columns,1);
   return effect;
 }
+function syncBoardCellSize(){
+  if(!MAP[0]||!Number.isFinite(window.innerWidth))return;
+  if(window.innerWidth<=560){
+    const mobileCell=Math.max(20,Math.min(30,Math.floor((window.innerWidth-18)/MAP[0].length)));
+    board.style.setProperty("--cell",mobileCell+"px");
+  }else board.style.removeProperty("--cell");
+}
 function render(){
   board.innerHTML="";
+  syncBoardCellSize();
   board.style.gridTemplateColumns=`repeat(${MAP[0].length},var(--cell))`;
   board.style.gridTemplateRows=`repeat(${MAP.length},var(--cell))`;
   board.setAttribute("aria-label",`Stage ${currentStage+1} 격자`);
@@ -539,6 +547,7 @@ document.addEventListener("keyup",event=>{
   if(direction&&heldDirection===direction)stopHeldMovement();
 });
 window.addEventListener?.("blur",stopHeldMovement);
+window.addEventListener?.("resize",syncBoardCellSize);
 resetButton.addEventListener("click",resetAllStages);
 document.querySelector("#restartGameButton").addEventListener("click",resetCurrentStage);
 document.querySelector("#endGameButton").addEventListener("click",()=>{if(state.animating)return;gameOverModal.hidden=true;message.textContent="게임을 종료했습니다. ‘처음부터’를 누르면 다시 시작할 수 있습니다.";render()});

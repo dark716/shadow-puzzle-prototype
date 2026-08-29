@@ -11,7 +11,7 @@ class FakeClassList{
 }
 class FakeElement{
   constructor(tag="div"){
-    this.tagName=tag.toUpperCase();this.children=[];this.parent=null;this.style={};this.dataset={};this.attributes={};this.classList=new FakeClassList();
+    this.tagName=tag.toUpperCase();this.children=[];this.parent=null;this.style={setProperty(name,value){this[name]=value},removeProperty(name){delete this[name]}};this.dataset={};this.attributes={};this.classList=new FakeClassList();
     this.disabled=false;this.hidden=false;this.textContent="";this._innerHTML="";this.listeners={};
   }
   set className(value){this.classList=new FakeClassList();String(value).split(/\s+/).filter(Boolean).forEach(name=>this.classList.add(name))}
@@ -47,7 +47,7 @@ const document={
 let now=0;
 const context=vm.createContext({
   console,document,
-  window:{matchMedia:()=>({matches:false})},
+  window:{innerWidth:412,matchMedia:()=>({matches:false}),addEventListener(){}},
   localStorage:{getItem:()=>null,removeItem(){}},
   location:{href:""},
   performance:{now:()=>now},
@@ -63,9 +63,11 @@ const uiCss=fs.readFileSync(new URL("../game-ui-v1.css",import.meta.url),"utf8")
 assert.match(uiCss,/\.actor\{[^}]*width:64px;[^}]*height:64px;/s,"32px actors must render at exact 2× size");
 assert.match(uiCss,/transform-origin:32px 56px/,"scaled (16,28) anchor must remain (32,56)");
 assert.match(uiCss,/@media\(max-width:820px\)\{[^}]*\}\s*\.actor\{[^}]*width:32px;[^}]*height:32px;[^}]*transform-origin:16px 28px/s,"mobile actors must use exact 1× size and the original anchor");
+assert.match(uiCss,/margin-top:calc\(var\(--cell\) - 32px\)/,"the mobile sprite canvas must end at the tile boundary");
 
 const run=source=>vm.runInContext(source,context);
 assert.equal(run("state.turn"),0);
+assert.equal(run("board.style['--cell']"),"30px");
 assert.equal(run("state.player.x+','+state.player.y"),"2,4");
 await run("move(0,-1)");
 assert.equal(run("state.turn"),1);
