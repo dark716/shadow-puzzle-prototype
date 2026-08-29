@@ -441,3 +441,38 @@ h1{font-size:clamp(1.15rem,2.4vw,1.8rem)}
   .movement-pad,.skill-pad{width:98%;max-width:none}
   .center-side{padding:2% 4%;gap:2px}
 }
+
+/* v12: generated 128px environment assets are used directly by the map renderer. */
+.board{
+  border-color:#302d27;
+  background:#050608;
+  box-shadow:0 14px 42px #000d,0 0 0 1px #80623c40;
+}
+.cell.art-tile,
+.cell.legacy-object-art{
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:100% 100%;
+  image-rendering:auto;
+}
+.cell.art-tile.wall{z-index:2}
+.cell.art-tile.goal{z-index:1}
+.cell.legacy-object-art{
+  border:0;
+  border-radius:0;
+  background-color:transparent;
+  box-shadow:none;
+  image-rendering:pixelated;
+}
+.cell.art-tile.candidate{
+  background-color:#9569dd24;
+  background-blend-mode:screen;
+}
+.cell.art-tile.target-cursor{
+  background-color:#9f78e13b;
+  background-blend-mode:screen;
+}
+.cleared .cell.art-tile.goal{
+  background-position:center!important;
+  filter:brightness(1.08) drop-shadow(0 0 5px #e5b84f80);
+}

@@ -65,6 +65,17 @@ assert.equal(obstaclePng.readUInt32BE(20),32,"obstacle asset must remain one 32p
 const tilesetPng=fs.readFileSync(new URL("../assets/tiles/shadow_puzzle_tileset_v1.png",import.meta.url));
 assert.equal(tilesetPng.readUInt32BE(16),256,"environment tileset must remain 8 × 32px wide");
 assert.equal(tilesetPng.readUInt32BE(20),128,"environment tileset must remain 4 × 32px high");
+const environmentAssets=[
+  "floor_01.png","floor_02.png","floor_03.png","floor_04.png","goal_shuriken.png",
+  "inner_join_bottom.png","inner_join_top.png","inner_wall_horizontal.png","inner_wall_vertical.png",
+  "wall_bottom.png","wall_corner_bl.png","wall_corner_br.png","wall_corner_tl.png","wall_corner_tr.png",
+  "wall_left.png","wall_right.png","wall_top.png"
+];
+for(const file of environmentAssets){
+  const png=fs.readFileSync(new URL(`../assets/environment/${file}`,import.meta.url));
+  assert.equal(png.readUInt32BE(16),128,`${file} width contract`);
+  assert.equal(png.readUInt32BE(20),128,`${file} height contract`);
+}
 const consolePanelPng=fs.readFileSync(new URL("../assets/ui/ui_console_panel_v1.png",import.meta.url));
 assert.equal(consolePanelPng.readUInt32BE(16),1024,"console panel width must remain 1024px");
 assert.equal(consolePanelPng.readUInt32BE(20),403,"console panel height must remain 403px");
@@ -96,6 +107,18 @@ assert.equal((indexHtml.match(/class="inventory-slot"/g)||[]).length,6,"inventor
 assert.equal((indexHtml.match(/skill-(?:north|west|east|south)/g)||[]).length,4,"skill group must contain four diamond positions");
 
 const run=source=>vm.runInContext(source,context);
+assert.equal(run("wallArtAt(0,0)"),"wall_corner_tl.png");
+assert.equal(run("wallArtAt(12,0)"),"wall_corner_tr.png");
+assert.equal(run("wallArtAt(6,0)"),"inner_join_top.png");
+assert.equal(run("wallArtAt(6,4)"),"inner_wall_vertical.png");
+assert.equal(run("wallArtAt(6,9)"),"inner_join_bottom.png");
+assert.equal(run("board.children[0].dataset.environmentAsset"),"wall_corner_tl.png");
+assert.equal(run("board.children[6].dataset.environmentAsset"),"inner_join_top.png");
+assert.equal(run("board.children[62].dataset.environmentAsset"),"goal_shuriken.png");
+run("loadStage(1)");
+assert.equal(run("currentStage"),1);
+assert.equal(run("board.children[59].classList.contains('legacy-object-art')"),true);
+run("loadStage(0)");
 assert.equal(run("state.turn"),0);
 assert.equal(run("board.style['--cell']"),"30px");
 assert.equal(run("state.player.x+','+state.player.y"),"2,4");

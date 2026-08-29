@@ -70,7 +70,23 @@ const SPRITES={
   swapBurst:"assets/effects/swap_burst.png?v=1",
   shuriken:"assets/projectiles/shuriken_spin.png?v=1"
 };
-const TILESET="assets/tiles/shadow_puzzle_tileset_v1.png?v=1";
+const ENVIRONMENT_ROOT="assets/environment";
+const ENVIRONMENT={
+  floors:["floor_01.png","floor_02.png","floor_03.png","floor_04.png"],
+  wallTop:"wall_top.png",
+  wallBottom:"wall_bottom.png",
+  wallLeft:"wall_left.png",
+  wallRight:"wall_right.png",
+  cornerTopLeft:"wall_corner_tl.png",
+  cornerTopRight:"wall_corner_tr.png",
+  cornerBottomLeft:"wall_corner_bl.png",
+  cornerBottomRight:"wall_corner_br.png",
+  innerVertical:"inner_wall_vertical.png",
+  innerHorizontal:"inner_wall_horizontal.png",
+  innerJoinTop:"inner_join_top.png",
+  innerJoinBottom:"inner_join_bottom.png",
+  goal:"goal_shuriken.png"
+};
 const DIRECTION_ROWS={down:0,left:1,right:2,up:3};
 const DIRECTION_VECTORS={down:[0,1],left:[-1,0],right:[1,0],up:[0,-1]};
 const REDUCED_MOTION=window.matchMedia?.("(prefers-reduced-motion: reduce)").matches??false;
@@ -206,27 +222,28 @@ function syncBoardCellSize(){
     board.style.setProperty("--cell",mobileCell+"px");
   }else board.style.removeProperty("--cell");
 }
-function setTileArt(element,column,row){
+function setTileArt(element,asset){
   element.classList.add("art-tile");
-  element.style.backgroundImage=`url("${TILESET}")`;
-  element.style.backgroundSize="800% 400%";
-  element.style.backgroundPosition=`${column*100/7}% ${row*100/3}%`;
+  element.dataset.environmentAsset=asset;
+  element.style.backgroundImage=`url("${ENVIRONMENT_ROOT}/${asset}?v=1")`;
+  element.style.backgroundSize="100% 100%";
+  element.style.backgroundPosition="center";
 }
 function floorVariant(x,y){return Math.abs((x*17+y*31+x*y*7)%4)}
 function wallArtAt(x,y){
-  const exposed={
-    top:!walls.has(key(x,y-1)),right:!walls.has(key(x+1,y)),
-    bottom:!walls.has(key(x,y+1)),left:!walls.has(key(x-1,y))
-  };
-  if(exposed.top&&exposed.left)return[0,1];
-  if(exposed.top&&exposed.right)return[1,1];
-  if(exposed.bottom&&exposed.left)return[2,1];
-  if(exposed.bottom&&exposed.right)return[3,1];
-  if(exposed.top)return[4,0];
-  if(exposed.left)return[5,0];
-  if(exposed.right)return[6,0];
-  if(exposed.bottom)return[7,0];
-  return[4,0];
+  const maxX=MAP[0].length-1,maxY=MAP.length-1;
+  if(x===0&&y===0)return ENVIRONMENT.cornerTopLeft;
+  if(x===maxX&&y===0)return ENVIRONMENT.cornerTopRight;
+  if(x===0&&y===maxY)return ENVIRONMENT.cornerBottomLeft;
+  if(x===maxX&&y===maxY)return ENVIRONMENT.cornerBottomRight;
+  if(y===0)return walls.has(key(x,y+1))?ENVIRONMENT.innerJoinTop:ENVIRONMENT.wallTop;
+  if(y===maxY)return walls.has(key(x,y-1))?ENVIRONMENT.innerJoinBottom:ENVIRONMENT.wallBottom;
+  if(x===0)return ENVIRONMENT.wallLeft;
+  if(x===maxX)return ENVIRONMENT.wallRight;
+
+  const vertical=Number(walls.has(key(x,y-1)))+Number(walls.has(key(x,y+1)));
+  const horizontal=Number(walls.has(key(x-1,y)))+Number(walls.has(key(x+1,y)));
+  return vertical>=horizontal?ENVIRONMENT.innerVertical:ENVIRONMENT.innerHorizontal;
 }
 function render(){
   board.innerHTML="";
@@ -242,7 +259,7 @@ function render(){
     const k=key(x,y);
     if(walls.has(k)){
       el.classList.add("wall");
-      setTileArt(el,...wallArtAt(x,y));
+      setTileArt(el,wallArtAt(x,y));
       if(!walls.has(key(x,y-1)))el.classList.add("wall-edge-top");
       if(!walls.has(key(x,y+1)))el.classList.add("wall-edge-bottom");
       if(!walls.has(key(x-1,y)))el.classList.add("wall-edge-left");
@@ -250,12 +267,14 @@ function render(){
     }
     else if(obstacles.has(k)){
       el.classList.add("obstacle");
-      setTileArt(el,1,2);
+      el.classList.add("legacy-object-art");
+      el.style.backgroundImage='url("assets/obstacles/stone-pillar-32.png?v=1")';
+      el.style.backgroundSize="100% 100%";
     }
-    else setTileArt(el,floorVariant(x,y),0);
+    else setTileArt(el,ENVIRONMENT.floors[floorVariant(x,y)]);
     if(goal.x===x&&goal.y===y){
       el.classList.add("goal");
-      setTileArt(el,4,2);
+      setTileArt(el,ENVIRONMENT.goal);
       el.setAttribute("aria-label",x+", "+y+", 목표");
     }
     if(valid.has(k))el.classList.add("candidate");else if(ring.has(k))el.classList.add("invalid");
