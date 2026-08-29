@@ -178,7 +178,7 @@ function positionEntity(element,position){
 }
 function createActor(kind,position,facing){
   const actor=document.createElement("div");
-  actor.className=`actor ${kind}-actor idle-animation`;
+  actor.className=`actor ${kind}-actor facing-${facing} idle-animation`;
   actor.dataset.kind=kind;
   actor.style.backgroundImage=`url("${SPRITES.playerIdle}")`;
   actor.style.backgroundSize="800% 400%";
