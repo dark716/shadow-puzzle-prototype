@@ -479,10 +479,6 @@ shadowButton.addEventListener("click",shadowAction);
 shurikenButton?.addEventListener("click",()=>void throwShuriken());
 cancelShadowButton.addEventListener("click",()=>cancelShadowSelection());
 swapButton.addEventListener("click",()=>void swap());
-document.querySelectorAll("[data-move]").forEach(button=>button.addEventListener("click",()=>{
-  const vector=DIRECTION_VECTORS[button.dataset.move];
-  if(state.selecting)moveCursor(...vector);else void move(...vector);
-}));
 let heldDirection=null,heldMoveSequence=0;
 const stopHeldMovement=()=>{heldDirection=null;heldMoveSequence++};
 async function repeatHeldMovement(direction,sequence){
@@ -494,13 +490,37 @@ async function repeatHeldMovement(direction,sequence){
     await new Promise(resolve=>setTimeout(resolve,24));
   }
 }
+function startHeldMovement(direction){
+  if(state.selecting){if(!state.animating)moveCursor(...DIRECTION_VECTORS[direction]);return}
+  if(state.cleared||state.gameOver||heldDirection===direction)return;
+  heldDirection=direction;const sequence=++heldMoveSequence;void repeatHeldMovement(direction,sequence);
+}
+const pointerHandledButtons=new WeakSet();
+document.querySelectorAll("[data-move]").forEach(button=>{
+  const direction=button.dataset.move;
+  button.addEventListener("pointerdown",event=>{
+    if(event.button!==undefined&&event.button!==0)return;
+    event.preventDefault();pointerHandledButtons.add(button);
+    button.setPointerCapture?.(event.pointerId);startHeldMovement(direction);
+  });
+  const release=event=>{
+    if(heldDirection===direction)stopHeldMovement();
+    if(event.pointerId!==undefined&&button.hasPointerCapture?.(event.pointerId))button.releasePointerCapture(event.pointerId);
+  };
+  button.addEventListener("pointerup",release);
+  button.addEventListener("pointercancel",release);
+  button.addEventListener("lostpointercapture",()=>{if(heldDirection===direction)stopHeldMovement()});
+  button.addEventListener("click",event=>{
+    if(pointerHandledButtons.delete(button)){event.preventDefault();return}
+    if(state.selecting)moveCursor(...DIRECTION_VECTORS[direction]);else void move(...DIRECTION_VECTORS[direction]);
+  });
+});
 document.addEventListener("keydown",event=>{
   const direction={ArrowUp:"up",ArrowDown:"down",ArrowLeft:"left",ArrowRight:"right"}[event.key];
   if(direction){
     event.preventDefault();
-    if(state.selecting){if(!state.animating&&!event.repeat)moveCursor(...DIRECTION_VECTORS[direction]);return}
-    if(state.cleared||state.gameOver)return;
-    if(heldDirection!==direction){heldDirection=direction;const sequence=++heldMoveSequence;void repeatHeldMovement(direction,sequence)}
+    if(event.repeat&&heldDirection===direction)return;
+    startHeldMovement(direction);
     return;
   }
   if(state.animating)return;

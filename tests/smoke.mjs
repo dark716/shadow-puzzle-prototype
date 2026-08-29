@@ -89,4 +89,14 @@ await new Promise(resolve=>setTimeout(resolve,20));
 const heldTurn=run("state.turn");
 assert.ok(heldTurn>=2,`holding an arrow key should move more than one tile (turn=${heldTurn}, held=${run("heldDirection")}, gameOver=${run("state.gameOver")})`);
 assert.equal(run("state.animating"),false);
-console.log("smoke: movement, held movement, shadow spawn, swap, shuriken, expiration passed");
+
+run("loadStage(0)");
+const rightButton=moveButtons.find(button=>button.dataset.move==="right");
+rightButton.listeners.pointerdown[0]({button:0,pointerId:1,preventDefault(){}});
+await new Promise(resolve=>setTimeout(resolve,400));
+rightButton.listeners.pointerup[0]({pointerId:1});
+await new Promise(resolve=>setTimeout(resolve,20));
+const touchHeldTurn=run("state.turn");
+assert.ok(touchHeldTurn>=2,`holding a movement button should move more than one tile (turn=${touchHeldTurn})`);
+assert.equal(run("state.animating"),false);
+console.log("smoke: movement, keyboard hold, touch hold, shadow spawn, swap, shuriken, expiration passed");

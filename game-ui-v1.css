@@ -121,6 +121,7 @@ h1{font-size:clamp(1.15rem,2.4vw,1.8rem)}
   box-shadow:none;
 }
 .movement-pad button{color:#c3c8d1}
+.movement-pad button{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .skill-pad{grid-template-columns:1fr;grid-template-rows:1fr 1fr;max-width:92px;gap:7px}
 .skill-pad .shadow-action,.skill-pad .shuriken-action{
   aspect-ratio:auto;
