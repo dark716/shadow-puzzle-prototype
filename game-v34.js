@@ -234,7 +234,7 @@ function render(){
   shadowButton.disabled=state.animating||state.cleared||state.gameOver;
   shadowButton.classList.toggle("active",state.selecting);
   const shadowLabel=state.shadow?(state.swapUsed?"스왑 완료":"스왑"):state.selecting?"위치 확정":"그림자";
-  shadowButton.innerHTML=`<strong>W</strong><span>${shadowLabel}</span>`;
+  shadowButton.innerHTML=`<strong aria-hidden="true">◐</strong><span>${shadowLabel}</span>`;
   if(shurikenButton)shurikenButton.disabled=state.animating||state.cleared||state.gameOver;
   cancelShadowButton.hidden=!state.selecting;
   cancelShadowButton.disabled=!state.selecting||state.animating||state.gameOver;
