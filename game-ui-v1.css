@@ -55,47 +55,77 @@ h1{font-size:clamp(1.15rem,2.4vw,1.8rem)}
   box-shadow:0 14px 42px #000b;
 }
 .cell{
-  border:1px solid #333a46;
+  border:1px solid #343b47;
   border-radius:0;
-  background:#292f3a;
-  box-shadow:inset 0 1px 0 #6971800d;
+  background:#303743;
+  box-shadow:inset 0 1px 0 #7a84920d;
 }
 .cell.wall{
-  border-color:#1d222b;
-  background:linear-gradient(145deg,#202630,#11151c);
-  box-shadow:inset 0 1px 0 #4a536127,0 2px 4px #0008;
+  border-color:#151a22;
+  background:linear-gradient(180deg,#1e2530 0,#151a22 42%,#0b0e13 100%);
+  box-shadow:inset 0 1px 0 #6671802e,inset 0 -3px 0 #05070a99;
 }
-.cell.goal{background:radial-gradient(circle,#c99b3857 0,#292f3a 68%)}
-.cell .goal-sprite{inset:9%;width:82%;height:82%;filter:drop-shadow(0 0 5px #e5b84f88)}
+.cell.wall-edge-top{border-top-color:#596473;box-shadow:inset 0 2px 0 #5864743d,inset 0 -3px 0 #05070a99}
+.cell.wall-edge-bottom{border-bottom-color:#05070a;box-shadow:inset 0 1px 0 #6671802e,inset 0 -4px 0 #030406cc,0 2px 2px #000b}
+.cell.wall-edge-left{border-left-color:#343d4a}
+.cell.wall-edge-right{border-right-color:#07090d}
+
+/* One-tile goal: a quiet gold rune cut into the same stone as the floor. */
+.cell.goal{background:#303743;box-shadow:inset 0 0 0 1px #9b783e66}
+.cell.goal:before{
+  content:""!important;
+  display:block!important;
+  position:absolute;
+  z-index:20;
+  width:58%;height:58%;
+  border:1px solid #d7ae55;
+  border-radius:50%;
+  background:radial-gradient(circle,#e8c36930 0 15%,transparent 18% 100%);
+  box-shadow:0 0 5px #d2a64b4d,inset 0 0 0 2px #8b6c3138;
+}
+.cell.goal:after{
+  content:"✦"!important;
+  display:grid!important;
+  place-items:center;
+  position:absolute;
+  z-index:21;
+  width:100%;height:100%;
+  color:#e7bd61;
+  font-size:calc(var(--cell)*.34);
+  text-shadow:0 0 4px #d6a74866;
+}
 
 .cell.candidate{
   border-color:#4b4166;
-  background:#312f42;
-  box-shadow:inset 0 0 0 999px #8f64db26;
+  background:#303743;
+  box-shadow:inset 0 0 0 999px #9569dd26;
 }
-.cell.candidate:after{display:none!important;content:none!important}
+.cell.candidate:not(.goal):after{display:none!important;content:none!important}
 .cell.invalid{background:#292f3a;border-color:#333a46}
 .cell.target-cursor{
   z-index:7;
   border-color:#c3a5ff;
-  box-shadow:inset 0 0 0 1px #c3a5ff,0 0 9px #9968e6a8;
+  background:#3b3650;
+  box-shadow:inset 0 0 0 1px #c3a5ff,inset 0 0 0 999px #9569dd38,0 0 7px #9968e675;
 }
-.cell.target-cursor:before{display:none!important;content:none!important}
+.cell.target-cursor:not(.goal):before{display:none!important;content:none!important}
 
 /* Sprites are visual overlays: logical occupancy remains exactly one tile. */
 .actor{
-  width:calc(var(--cell)*1.5);
-  height:calc(var(--cell)*1.5);
-  margin-left:calc(var(--cell)*-.25);
-  margin-top:calc(var(--cell)*-.5);
-  transform-origin:50% 100%;
+  width:64px;
+  height:64px;
+  margin-left:calc(var(--cell)/2 - 32px);
+  margin-top:calc(var(--cell) - 56px);
+  transform-origin:32px 56px;
   image-rendering:pixelated;
   filter:drop-shadow(0 3px 4px #000c);
 }
 .shadow-actor{
-  opacity:.88;
+  opacity:1;
   filter:grayscale(1) sepia(1) hue-rotate(222deg) saturate(5.2) brightness(.75) drop-shadow(0 3px 6px #7437c9b8);
 }
+
+.cell .obstacle-sprite{inset:4%;width:92%;height:92%;filter:brightness(1.16) saturate(.72) drop-shadow(0 3px 2px #000b)}
 
 .controls{gap:0}
 .controls section{

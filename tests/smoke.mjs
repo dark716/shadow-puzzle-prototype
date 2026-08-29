@@ -56,6 +56,13 @@ const context=vm.createContext({
 });
 vm.runInContext(fs.readFileSync(new URL("../game-v34.js",import.meta.url),"utf8"),context,{filename:"game-v34.js"});
 
+const spritePng=fs.readFileSync(new URL("../assets/sprites/player_reference_32.png",import.meta.url));
+assert.equal(spritePng.readUInt32BE(16),256,"sprite sheet width must remain 8 × 32px");
+assert.equal(spritePng.readUInt32BE(20),128,"sprite sheet height must remain 4 × 32px");
+const uiCss=fs.readFileSync(new URL("../game-ui-v1.css",import.meta.url),"utf8");
+assert.match(uiCss,/\.actor\{[^}]*width:64px;[^}]*height:64px;/s,"32px actors must render at exact 2× size");
+assert.match(uiCss,/transform-origin:32px 56px/,"scaled (16,28) anchor must remain (32,56)");
+
 const run=source=>vm.runInContext(source,context);
 assert.equal(run("state.turn"),0);
 assert.equal(run("state.player.x+','+state.player.y"),"2,4");

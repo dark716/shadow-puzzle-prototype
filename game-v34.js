@@ -209,14 +209,20 @@ function render(){
     const el=document.createElement("button");
     el.className="cell";el.setAttribute("role","gridcell");el.setAttribute("aria-label",x+", "+y);
     const k=key(x,y);
-    if(walls.has(k))el.classList.add("wall");
+    if(walls.has(k)){
+      el.classList.add("wall");
+      if(!walls.has(key(x,y-1)))el.classList.add("wall-edge-top");
+      if(!walls.has(key(x,y+1)))el.classList.add("wall-edge-bottom");
+      if(!walls.has(key(x-1,y)))el.classList.add("wall-edge-left");
+      if(!walls.has(key(x+1,y)))el.classList.add("wall-edge-right");
+    }
     else if(obstacles.has(k)){
       el.classList.add("obstacle");
       const sprite=document.createElement("img");sprite.className="entity-sprite obstacle-sprite";sprite.src="assets/obstacle.png?v=1";sprite.alt="장애물";sprite.draggable=false;el.append(sprite);
     }
     if(goal.x===x&&goal.y===y){
       el.classList.add("goal");
-      const sprite=document.createElement("img");sprite.className="entity-sprite goal-sprite";sprite.src="assets/goal.png?v=1";sprite.alt="출구";sprite.draggable=false;el.append(sprite);
+      el.setAttribute("aria-label",x+", "+y+", 목표");
     }
     if(valid.has(k))el.classList.add("candidate");else if(ring.has(k))el.classList.add("invalid");
     if(state.shadow&&samePosition(state.shadow,{x,y}))el.classList.add("shadow");
