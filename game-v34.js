@@ -63,9 +63,9 @@ const BUILT_IN_STAGES=[
 
 const APPLIED_STAGES_KEY="shadowPuzzleAppliedStages";
 const SPRITES={
-  playerIdle:"assets/sprites/player_redesign_v1.png?v=2",
-  playerWalk:"assets/sprites/player_redesign_v1.png?v=2",
-  playerThrow:"assets/sprites/player_redesign_v1.png?v=2",
+  playerIdle:"assets/sprites/player_redesign_v2.png?v=1",
+  playerWalk:"assets/sprites/player_redesign_v2.png?v=1",
+  playerThrow:"assets/sprites/player_redesign_v2.png?v=1",
   shadowSpawn:"assets/effects/shadow_spawn.png?v=1",
   swapBurst:"assets/effects/swap_burst.png?v=1",
   shuriken:"assets/projectiles/shuriken_spin.png?v=1"

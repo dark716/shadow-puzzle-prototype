@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Normalize generated SD character sheets into a clean four-direction sprite sheet."""
+"""Build a fixed-canvas four-direction sprite sheet without per-frame transforms."""
 
 from collections import deque
 from pathlib import Path
@@ -41,8 +41,7 @@ def isolate_figure(cell):
     keep = keep.filter(ImageFilter.MaxFilter(7))
     cleaned = cell.copy()
     cleaned.putalpha(Image.composite(alpha, Image.new("L", cell.size), keep))
-    bbox = cleaned.getchannel("A").getbbox()
-    return cleaned.crop(bbox)
+    return cleaned
 
 
 def split(source, columns=4, rows=2):
@@ -62,24 +61,11 @@ def split(source, columns=4, rows=2):
     return figures
 
 
-def normalize(figures):
-    scale = min(
-        88 / max(figure.width for row in figures for figure in row),
-        92 / max(figure.height for row in figures for figure in row),
-    )
-    result = []
-    for row in figures:
-        normalized_row = []
-        for figure in row:
-            figure = figure.resize(
-                (max(1, round(figure.width * scale)), max(1, round(figure.height * scale))),
-                Image.Resampling.LANCZOS,
-            )
-            cell = Image.new("RGBA", (CELL, CELL))
-            cell.alpha_composite(figure, ((CELL - figure.width) // 2, CELL - figure.height - 2))
-            normalized_row.append(cell)
-        result.append(normalized_row)
-    return result
+def resize_fixed(figures):
+    return [
+        [figure.resize((CELL, CELL), Image.Resampling.LANCZOS) for figure in row]
+        for row in figures
+    ]
 
 
 def main(side_path, directions_path, output_path):
@@ -91,7 +77,7 @@ def main(side_path, directions_path, output_path):
         side[0],
         directions[1],
     ]
-    rows = normalize(rows)
+    rows = resize_fixed(rows)
     sheet = Image.new("RGBA", (CELL * 4, CELL * 4))
     for row, frames in enumerate(rows):
         for column, frame in enumerate(frames):
