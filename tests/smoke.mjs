@@ -71,6 +71,14 @@ assert.equal(consolePanelPng.readUInt32BE(20),403,"console panel height must rem
 const consoleButtonsPng=fs.readFileSync(new URL("../assets/ui/ui_console_buttons_v1.png",import.meta.url));
 assert.equal(consoleButtonsPng.readUInt32BE(16),384,"console button sheet must remain 3 × 128px wide");
 assert.equal(consoleButtonsPng.readUInt32BE(20),256,"console button sheet must remain 2 × 128px high");
+const finalPanelPng=fs.readFileSync(new URL("../assets/ui/final/control_panel_frame.png",import.meta.url));
+assert.equal(finalPanelPng.readUInt32BE(16),1024,"final console panel width must remain 1024px");
+assert.equal(finalPanelPng.readUInt32BE(20),284,"final console panel height must remain 284px");
+for(const [file,width,height] of [["dpad_button.png",128,128],["option_button.png",128,106],["inventory_slot.png",96,84],["skill_button.png",128,128]]){
+  const png=fs.readFileSync(new URL(`../assets/ui/final/${file}`,import.meta.url));
+  assert.equal(png.readUInt32BE(16),width,`${file} width contract`);
+  assert.equal(png.readUInt32BE(20),height,`${file} height contract`);
+}
 const uiCss=fs.readFileSync(new URL("../game-ui-v1.css",import.meta.url),"utf8");
 assert.match(uiCss,/\.actor\{[^}]*width:64px;[^}]*height:64px;/s,"32px actors must render at exact 2× size");
 assert.match(uiCss,/transform-origin:32px 56px/,"scaled (16,28) anchor must remain (32,56)");
@@ -81,6 +89,11 @@ assert.match(uiCss,/\.skill-pad\{width:40vw;max-width:164px\}/,"mobile console a
 assert.match(uiCss,/\.cell\.art-tile\{/,"board environment must use the unified PNG tileset");
 assert.match(uiCss,/ui_console_panel_v1\.png/,"control deck must use the raster console panel");
 assert.match(uiCss,/ui_console_buttons_v1\.png/,"controls must use the raster button sheet");
+assert.match(uiCss,/control_panel_frame\.png/,"final UI must use the reference-extracted panel");
+assert.match(uiCss,/grid-template-columns:30% 40% 30%/,"console must preserve the 30/40/30 layout");
+const indexHtml=fs.readFileSync(new URL("../index.html",import.meta.url),"utf8");
+assert.equal((indexHtml.match(/class="inventory-slot"/g)||[]).length,6,"inventory must contain exactly six slots");
+assert.equal((indexHtml.match(/skill-(?:north|west|east|south)/g)||[]).length,4,"skill group must contain four diamond positions");
 
 const run=source=>vm.runInContext(source,context);
 assert.equal(run("state.turn"),0);

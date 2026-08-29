@@ -7,7 +7,7 @@
   <title>그림자 퍼즐 — Stage 1</title>
   <link rel="stylesheet" href="style-v30.css">
   <link rel="stylesheet" href="animation-v1.css?v=5">
-  <link rel="stylesheet" href="game-ui-v1.css?v=10">
+  <link rel="stylesheet" href="game-ui-v1.css?v=11">
 </head>
 <body>
   <main class="app">
@@ -35,16 +35,30 @@
           <div class="mobile-control-deck">
             <div class="movement-side">
               <div class="movement-pad">
-                <button class="move-up" data-move="up" aria-label="위로 이동">▲</button>
-                <button class="move-left" data-move="left" aria-label="왼쪽으로 이동">◀</button>
-                <button class="move-right" data-move="right" aria-label="오른쪽으로 이동">▶</button>
-                <button class="move-down" data-move="down" aria-label="아래로 이동">▼</button>
+                <button class="move-up" data-move="up" aria-label="위로 이동"><img src="assets/icons/final/arrow.svg" alt=""></button>
+                <button class="move-left" data-move="left" aria-label="왼쪽으로 이동"><img src="assets/icons/final/arrow.svg" alt=""></button>
+                <span class="dpad-center" aria-hidden="true"><img src="assets/icons/shuriken-mark.svg" alt=""></span>
+                <button class="move-right" data-move="right" aria-label="오른쪽으로 이동"><img src="assets/icons/final/arrow.svg" alt=""></button>
+                <button class="move-down" data-move="down" aria-label="아래로 이동"><img src="assets/icons/final/arrow.svg" alt=""></button>
+              </div>
+            </div>
+            <div class="center-side">
+              <div class="option-row">
+                <button class="option-button" type="button" disabled aria-label="설정 준비 중"><img src="assets/icons/final/settings.svg" alt=""></button>
+                <span class="logo-space" aria-hidden="true"></span>
+                <button class="option-button" type="button" disabled aria-label="카메라 준비 중"><img src="assets/icons/final/camera.svg" alt=""></button>
+              </div>
+              <div class="inventory-grid" aria-label="인벤토리 6칸">
+                <span class="inventory-slot"></span><span class="inventory-slot"></span><span class="inventory-slot"></span>
+                <span class="inventory-slot"></span><span class="inventory-slot"></span><span class="inventory-slot"></span>
               </div>
             </div>
             <div class="skills-side">
               <div class="skill-pad">
-                <button id="shadowButton" class="primary shadow-action" aria-label="그림자 행동"><img class="skill-icon" src="assets/icons/shadow-mark.svg" alt=""><span>그림자</span></button>
-                <button id="shurikenButton" class="skill-slot shuriken-action" aria-label="바라보는 방향으로 표창 던지기"><img class="skill-icon" src="assets/icons/shuriken-mark.svg" alt=""><span>표창</span></button>
+                <button id="shadowButton" class="primary shadow-action skill-north" aria-label="그림자 행동"><img class="skill-icon" src="assets/icons/shadow-mark.svg" alt=""></button>
+                <button class="skill-slot shadow-teal-action skill-west" disabled aria-label="두 번째 그림자 준비 중"><img class="skill-icon" src="assets/icons/shadow-mark.svg" alt=""></button>
+                <button id="shurikenButton" class="skill-slot shuriken-action skill-east" aria-label="바라보는 방향으로 표창 던지기"><img class="skill-icon" src="assets/icons/shuriken-mark.svg" alt=""></button>
+                <button class="skill-slot enhance-action skill-south" disabled aria-label="강화 준비 중"><img class="skill-icon" src="assets/icons/final/enhance.svg" alt=""></button>
               </div>
             </div>
           </div>
@@ -65,6 +79,6 @@
       </div>
     </section>
   </div>
-  <script src="game-v34.js?v=19"></script>
+  <script src="game-v34.js?v=20"></script>
 </body>
 </html>

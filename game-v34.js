@@ -275,7 +275,8 @@ function render(){
   shadowButton.disabled=state.animating||state.cleared||state.gameOver;
   shadowButton.classList.toggle("active",state.selecting);
   const shadowLabel=state.shadow?(state.swapUsed?"스왑 완료":"스왑"):state.selecting?"위치 확정":"그림자";
-  shadowButton.innerHTML=`<img class="skill-icon" src="assets/icons/shadow-mark.svg" alt=""><span>${shadowLabel}</span>`;
+  shadowButton.innerHTML=`<img class="skill-icon" src="assets/icons/shadow-mark.svg" alt="">`;
+  shadowButton.setAttribute("aria-label",shadowLabel);
   if(shurikenButton)shurikenButton.disabled=state.animating||state.cleared||state.gameOver;
   cancelShadowButton.hidden=!state.selecting;
   cancelShadowButton.disabled=!state.selecting||state.animating||state.gameOver;

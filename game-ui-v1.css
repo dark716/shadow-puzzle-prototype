@@ -345,3 +345,99 @@ h1{font-size:clamp(1.15rem,2.4vw,1.8rem)}
   .movement-pad{width:min(76%,132px)}
   .skill-pad{width:min(96%,154px)}
 }
+
+/* v11: final-reference 30/40/30 console layout and reusable extracted resources. */
+.controls .play-controls{
+  aspect-ratio:2.62;
+  padding:clamp(13px,3.2%,22px) clamp(17px,3.5%,30px)!important;
+  background-image:url("assets/ui/final/control_panel_frame.png?v=1")!important;
+  background-size:100% 100%!important;
+}
+.controls .mobile-control-deck{
+  grid-template-columns:30% 40% 30%;
+  gap:0;
+  overflow:visible;
+}
+.movement-side,.center-side,.skills-side{min-width:0;height:100%;display:grid;place-items:center}
+
+.movement-pad{
+  width:min(94%,190px);
+  max-width:none;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  grid-template-rows:repeat(3,1fr);
+  gap:0;
+}
+.movement-pad button{
+  width:100%;height:100%;padding:16%;
+  background-image:url("assets/ui/final/dpad_button.png?v=1")!important;
+  background-size:100% 100%!important;
+  background-position:center!important;
+  filter:drop-shadow(0 2px 2px #000b);
+}
+.movement-pad button:active{background-position:center!important;filter:brightness(.78) drop-shadow(0 1px 1px #000)}
+.movement-pad button img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.movement-pad .move-up img{transform:rotate(0)}
+.movement-pad .move-right img{transform:rotate(90deg)}
+.movement-pad .move-down img{transform:rotate(180deg)}
+.movement-pad .move-left img{transform:rotate(-90deg)}
+.dpad-center{
+  grid-column:2;grid-row:2;width:76%;height:76%;align-self:center;justify-self:center;
+  display:grid;place-items:center;
+  background:#11151b;border:1px solid #76572f;box-shadow:inset 0 0 0 2px #050608,0 2px 3px #000;
+  transform:rotate(45deg);
+}
+.dpad-center img{width:58%;height:58%;transform:rotate(-45deg);filter:brightness(0) saturate(100%) invert(69%) sepia(43%) saturate(680%) hue-rotate(358deg) brightness(88%)}
+
+.center-side{grid-template-rows:auto 1fr;align-content:center;gap:3px;padding:3% 5%}
+.option-row,.inventory-grid{width:100%}
+.option-row{display:grid;grid-template-columns:27% 1fr 27%;align-items:center;gap:4px}
+.option-button{
+  width:100%;aspect-ratio:1;padding:22%;margin:0!important;
+  border:0!important;border-radius:0!important;
+  background:transparent url("assets/ui/final/option_button.png?v=1") center/100% 100% no-repeat!important;
+  box-shadow:none!important;opacity:1!important;
+}
+.option-button img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 1px 1px #000)}
+.logo-space{height:42%;min-height:8px;border:1px solid #292821;border-radius:3px;background:#080a0e99;box-shadow:inset 0 1px 4px #000}
+.inventory-grid{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:2px;align-self:start}
+.inventory-slot{
+  display:block;aspect-ratio:96/84;
+  background:transparent url("assets/ui/final/inventory_slot.png?v=1") center/100% 100% no-repeat;
+}
+
+.skill-pad{
+  width:min(94%,190px);max-width:none;
+  display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:0;
+}
+.skill-pad .shadow-action,.skill-pad .shadow-teal-action,
+.skill-pad .shuriken-action,.skill-pad .enhance-action{
+  width:100%;height:100%;aspect-ratio:1;padding:24%;margin:0!important;
+  border:0!important;border-radius:50%!important;
+  background:transparent url("assets/ui/final/skill_button.png?v=1") center/100% 100% no-repeat!important;
+  box-shadow:none!important;filter:drop-shadow(0 2px 2px #000b);transform:none;
+}
+.skill-pad .skill-north{grid-column:2;grid-row:1}
+.skill-pad .skill-west{grid-column:1;grid-row:2}
+.skill-pad .skill-east{grid-column:3;grid-row:2}
+.skill-pad .skill-south{grid-column:2;grid-row:3}
+.skill-pad .shadow-action.active{background-position:center!important;box-shadow:0 0 0 2px #815cc5,0 0 9px #6c3fb8aa!important}
+.skill-pad button:active:not(:disabled){filter:brightness(.78) drop-shadow(0 1px 1px #000);transform:translateY(1px)}
+.skill-pad button:disabled{opacity:.46}
+.skill-pad .skill-icon{width:100%;height:100%;object-fit:contain}
+.shadow-action .skill-icon{filter:brightness(0) saturate(100%) invert(51%) sepia(38%) saturate(1250%) hue-rotate(224deg) brightness(90%)}
+.shadow-teal-action .skill-icon{filter:brightness(0) saturate(100%) invert(55%) sepia(28%) saturate(950%) hue-rotate(128deg) brightness(82%)}
+.shuriken-action .skill-icon{filter:brightness(0) saturate(100%) invert(88%) sepia(8%) saturate(230%) hue-rotate(176deg) brightness(102%)}
+.enhance-action .skill-icon{filter:none}
+
+@media(max-width:820px){
+  .controls .play-controls{width:min(390px,calc(100vw - 10px));padding:12px 17px!important}
+  .controls .mobile-control-deck{grid-template-columns:30% 40% 30%;gap:0;padding:0}
+  .movement-pad,.skill-pad{width:96%}
+}
+@media(max-width:560px){
+  .controls .play-controls{padding:11px 16px!important}
+  .controls .mobile-control-deck{gap:0;padding:0}
+  .movement-pad,.skill-pad{width:98%;max-width:none}
+  .center-side{padding:2% 4%;gap:2px}
+}
