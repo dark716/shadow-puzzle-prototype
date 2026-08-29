@@ -450,13 +450,14 @@ h1{font-size:clamp(1.15rem,2.4vw,1.8rem)}
 }
 .cell.art-tile,
 .cell.legacy-object-art{
+  background-color:#272a2e;
   background-repeat:no-repeat;
   background-position:center;
   background-size:100% 100%;
   image-rendering:auto;
 }
-.cell.art-tile.wall{z-index:2}
-.cell.art-tile.goal{z-index:1}
+.cell.art-tile.wall{z-index:2;background-color:#111318}
+.cell.art-tile.goal{z-index:1;background-color:#272a2e}
 .cell.legacy-object-art{
   border:0;
   border-radius:0;
