@@ -73,6 +73,10 @@ def main(side_path, front_path, back_path, output_path):
     right = split_fixed(Image.open(side_path))
     down = split_fixed(Image.open(front_path))
     up = split_fixed(Image.open(back_path))
+    # Close every cycle on the exact idle pixels so stopping never changes size.
+    right[-1] = right[0].copy()
+    down[-1] = down[0].copy()
+    up[-1] = up[0].copy()
     left = [frame.transpose(Image.Transpose.FLIP_LEFT_RIGHT) for frame in right]
     rows = [down, left, right, up]
 
