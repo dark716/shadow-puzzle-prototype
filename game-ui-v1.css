@@ -173,6 +173,13 @@ h1{font-size:clamp(1.15rem,2.4vw,1.8rem)}
 
 @media(max-width:820px){
   :root{--cell:min(calc((100vw - 20px)/13),48px)}
+  .actor{
+    width:32px;
+    height:32px;
+    margin-left:calc(var(--cell)/2 - 16px);
+    margin-top:calc(var(--cell) - 28px);
+    transform-origin:16px 28px;
+  }
   .app{width:100%;padding:12px 6px 20px}
   header{padding:0 4px}
   .layout{grid-template-columns:1fr;gap:8px}

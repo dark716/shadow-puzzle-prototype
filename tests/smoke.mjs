@@ -62,6 +62,7 @@ assert.equal(spritePng.readUInt32BE(20),128,"sprite sheet height must remain 4 �
 const uiCss=fs.readFileSync(new URL("../game-ui-v1.css",import.meta.url),"utf8");
 assert.match(uiCss,/\.actor\{[^}]*width:64px;[^}]*height:64px;/s,"32px actors must render at exact 2× size");
 assert.match(uiCss,/transform-origin:32px 56px/,"scaled (16,28) anchor must remain (32,56)");
+assert.match(uiCss,/@media\(max-width:820px\)\{[^}]*\}\s*\.actor\{[^}]*width:32px;[^}]*height:32px;[^}]*transform-origin:16px 28px/s,"mobile actors must use exact 1× size and the original anchor");
 
 const run=source=>vm.runInContext(source,context);
 assert.equal(run("state.turn"),0);
