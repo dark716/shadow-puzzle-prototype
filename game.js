@@ -226,7 +226,7 @@ function render(){
     }
     else if(obstacles.has(k)){
       el.classList.add("obstacle");
-      const sprite=document.createElement("img");sprite.className="entity-sprite obstacle-sprite";sprite.src="assets/obstacle.png?v=1";sprite.alt="장애물";sprite.draggable=false;el.append(sprite);
+      const sprite=document.createElement("img");sprite.className="entity-sprite obstacle-sprite";sprite.src="assets/obstacles/stone-pillar-32.png?v=1";sprite.alt="석조 장애물";sprite.draggable=false;el.append(sprite);
     }
     if(goal.x===x&&goal.y===y){
       el.classList.add("goal");
@@ -249,7 +249,7 @@ function render(){
   shadowButton.disabled=state.animating||state.cleared||state.gameOver;
   shadowButton.classList.toggle("active",state.selecting);
   const shadowLabel=state.shadow?(state.swapUsed?"스왑 완료":"스왑"):state.selecting?"위치 확정":"그림자";
-  shadowButton.innerHTML=`<strong aria-hidden="true">◐</strong><span>${shadowLabel}</span>`;
+  shadowButton.innerHTML=`<img class="skill-icon" src="assets/icons/shadow-mark.svg" alt=""><span>${shadowLabel}</span>`;
   if(shurikenButton)shurikenButton.disabled=state.animating||state.cleared||state.gameOver;
   cancelShadowButton.hidden=!state.selecting;
   cancelShadowButton.disabled=!state.selecting||state.animating||state.gameOver;
