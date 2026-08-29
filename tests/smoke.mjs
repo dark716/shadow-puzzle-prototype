@@ -68,6 +68,7 @@ assert.match(uiCss,/transform-origin:32px 56px/,"scaled (16,28) anchor must rema
 assert.match(uiCss,/@media\(max-width:820px\)\{[^}]*\}\s*\.actor\{[^}]*width:32px;[^}]*height:32px;[^}]*transform-origin:16px 28px/s,"mobile actors must use exact 1× size and the original anchor");
 assert.match(uiCss,/margin-top:calc\(var\(--cell\) - 32px\)/,"the mobile sprite canvas must end at the tile boundary");
 assert.match(uiCss,/\.actor\.facing-left\{margin-left:calc\(var\(--cell\)\/2 - 18px\)\}/,"left-facing sprites need a mobile-only 2px optical correction");
+assert.match(uiCss,/\.skill-pad\{width:40vw;max-width:164px\}/,"mobile console action buttons need balanced space beside the d-pad");
 
 const run=source=>vm.runInContext(source,context);
 assert.equal(run("state.turn"),0);

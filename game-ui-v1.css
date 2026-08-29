@@ -194,9 +194,9 @@ h1{font-size:clamp(1.15rem,2.4vw,1.8rem)}
   .layout{grid-template-columns:1fr;gap:8px}
   .board-panel{padding:4px!important}
   .controls .play-controls{width:min(390px,94vw);max-width:none;margin:0 auto}
-  .mobile-control-deck{gap:22px;padding:0 14px}
-  .movement-pad{width:min(37vw,158px)}
-  .skill-pad{width:min(24vw,92px)}
+  .mobile-control-deck{grid-template-columns:.9fr 1.1fr;gap:18px;padding:4px 14px}
+  .movement-pad{width:min(35vw,148px)}
+  .skill-pad{width:min(40vw,166px)}
 }
 
 @media(max-width:560px){
@@ -213,9 +213,8 @@ h1{font-size:clamp(1.15rem,2.4vw,1.8rem)}
   .status .message{grid-column:auto;font-size:.68rem}
   .board-panel{padding:0!important}
   .controls .play-controls{padding:8px 10px!important;margin-top:4px}
-  .mobile-control-deck{gap:clamp(14px,8vw,34px);padding:0 12px}
+  .mobile-control-deck{gap:clamp(10px,4vw,18px);padding:3px 8px}
   .movement-pad{width:34vw;max-width:140px}
   .movement-pad button{font-size:.82rem}
-  .skill-pad{width:23vw;max-width:88px}
-  .skill-pad .shadow-action,.skill-pad .shuriken-action{min-height:46px}
+  .skill-pad{width:40vw;max-width:164px}
 }
