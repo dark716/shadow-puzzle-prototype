@@ -86,6 +86,8 @@ def main(source_path, output_path):
     for row, source_row in enumerate((0, 2, 3, 1)):
         top = ROW_TOPS[source_row]
         for column, center_x in enumerate(CENTERS_X):
+            if row == 3 and column == 0:
+                center_x = CENTERS_X[7]
             box = (center_x - SOURCE_CELL // 2, top, center_x + SOURCE_CELL // 2, top + SOURCE_CELL)
             frame = foreground_from_dark_panel(source.crop(box))
             frame = frame.resize((TARGET_CELL, TARGET_CELL), Image.Resampling.LANCZOS)
