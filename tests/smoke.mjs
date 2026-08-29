@@ -36,12 +36,13 @@ const elements=Object.fromEntries(ids.map(id=>{const el=new FakeElement(id.inclu
 const boardPanel=new FakeElement("section");boardPanel.className="board-panel";boardPanel.append(elements.board);
 const moveButtons=["up","left","right","down"].map(direction=>{const el=new FakeElement("button");el.dataset.move=direction;return el});
 const body=new FakeElement("body");
+const documentListeners={};
 const document={
   body,
   createElement:tag=>new FakeElement(tag),
   querySelector(selector){if(selector===".board-panel")return boardPanel;if(selector.startsWith("#"))return elements[selector.slice(1)]??null;return null},
   querySelectorAll(selector){return selector==="[data-move]"?moveButtons:[]},
-  addEventListener(){}
+  addEventListener(type,handler){(documentListeners[type]??=[]).push(handler)}
 };
 let now=0;
 const context=vm.createContext({
@@ -78,4 +79,14 @@ await run("throwShuriken()");
 assert.equal(run("state.shadow"),null);
 assert.equal(run("state.shadowLife"),0);
 assert.equal(run("state.animating"),false);
-console.log("smoke: movement, shadow spawn, swap, shuriken, expiration passed");
+
+run("loadStage(0)");
+const keyEvent=key=>({key,repeat:false,preventDefault(){}});
+documentListeners.keydown[0](keyEvent("ArrowRight"));
+await new Promise(resolve=>setTimeout(resolve,400));
+documentListeners.keyup[0](keyEvent("ArrowRight"));
+await new Promise(resolve=>setTimeout(resolve,20));
+const heldTurn=run("state.turn");
+assert.ok(heldTurn>=2,`holding an arrow key should move more than one tile (turn=${heldTurn}, held=${run("heldDirection")}, gameOver=${run("state.gameOver")})`);
+assert.equal(run("state.animating"),false);
+console.log("smoke: movement, held movement, shadow spawn, swap, shuriken, expiration passed");

@@ -73,6 +73,7 @@ const SPRITES={
 const DIRECTION_ROWS={down:0,left:1,right:2,up:3};
 const DIRECTION_VECTORS={down:[0,1],left:[-1,0],right:[1,0],up:[0,-1]};
 const REDUCED_MOTION=window.matchMedia?.("(prefers-reduced-motion: reduce)").matches??false;
+const MOVEMENT_DURATION=220;
 
 function validAppliedStage(stage){
   if(!Array.isArray(stage)||!stage.length)return false;
@@ -300,7 +301,7 @@ function animatePlayerMove(from,to,facing){
   return new Promise(resolve=>{
     const started=performance.now();
     function tick(now){
-      const progress=Math.min(1,(now-started)/duration(333));
+      const progress=Math.min(1,(now-started)/duration(MOVEMENT_DURATION));
       const eased=progress;
       setSheetFrame(actor,Math.min(7,Math.floor(progress*8)),DIRECTION_ROWS[facing],8,4);
       actor.style.transform=`translate(${distanceX*eased}px,${distanceY*eased}px)`;
@@ -349,16 +350,17 @@ function checkGoal(){
 }
 
 async function move(dx,dy){
-  if(state.animating||state.cleared||state.gameOver)return;
+  if(state.animating||state.cleared||state.gameOver)return false;
   state.facing=directionFrom(dx,dy);state.selecting=false;state.cursor=null;
   const from={...state.player},to={x:from.x+dx,y:from.y+dy};
-  if(blocked(to.x,to.y)){message.textContent="벽이나 장애물로는 이동할 수 없습니다.";render();return}
-  if(state.shadow&&samePosition(to,state.shadow)){message.textContent="그림자가 있는 칸입니다.";render();return}
+  if(blocked(to.x,to.y)){message.textContent="벽이나 장애물로는 이동할 수 없습니다.";render();return false}
+  if(state.shadow&&samePosition(to,state.shadow)){message.textContent="그림자가 있는 칸입니다.";render();return false}
   state.animating=true;render();
   try{
     await animatePlayerMove(from,to,state.facing);
     state.player=to;message.textContent="한 칸 이동했습니다.";
     await spendTurn();
+    return true;
   }finally{state.animating=false;render()}
 }
 async function createShadow(x,y){
@@ -481,14 +483,36 @@ document.querySelectorAll("[data-move]").forEach(button=>button.addEventListener
   const vector=DIRECTION_VECTORS[button.dataset.move];
   if(state.selecting)moveCursor(...vector);else void move(...vector);
 }));
+let heldDirection=null,heldMoveSequence=0;
+const stopHeldMovement=()=>{heldDirection=null;heldMoveSequence++};
+async function repeatHeldMovement(direction,sequence){
+  const vector=DIRECTION_VECTORS[direction];
+  while(heldDirection===direction&&sequence===heldMoveSequence){
+    const moved=await move(...vector);
+    if(!moved){stopHeldMovement();return}
+    if(heldDirection!==direction||sequence!==heldMoveSequence)return;
+    await new Promise(resolve=>setTimeout(resolve,24));
+  }
+}
 document.addEventListener("keydown",event=>{
+  const direction={ArrowUp:"up",ArrowDown:"down",ArrowLeft:"left",ArrowRight:"right"}[event.key];
+  if(direction){
+    event.preventDefault();
+    if(state.selecting){if(!state.animating&&!event.repeat)moveCursor(...DIRECTION_VECTORS[direction]);return}
+    if(state.cleared||state.gameOver)return;
+    if(heldDirection!==direction){heldDirection=direction;const sequence=++heldMoveSequence;void repeatHeldMovement(direction,sequence)}
+    return;
+  }
   if(state.animating)return;
   if(event.key==="Escape"&&state.selecting){event.preventDefault();cancelShadowSelection();return}
-  if(event.key==="w"||event.key==="W"){event.preventDefault();shadowAction();return}
-  if(event.key==="q"||event.key==="Q"){event.preventDefault();void throwShuriken();return}
-  const direction={ArrowUp:"up",ArrowDown:"down",ArrowLeft:"left",ArrowRight:"right"}[event.key];
-  if(direction){event.preventDefault();const vector=DIRECTION_VECTORS[direction];if(state.selecting)moveCursor(...vector);else void move(...vector)}
+  if((event.key==="w"||event.key==="W")&&!event.repeat){event.preventDefault();shadowAction();return}
+  if((event.key==="q"||event.key==="Q")&&!event.repeat){event.preventDefault();void throwShuriken();return}
 });
+document.addEventListener("keyup",event=>{
+  const direction={ArrowUp:"up",ArrowDown:"down",ArrowLeft:"left",ArrowRight:"right"}[event.key];
+  if(direction&&heldDirection===direction)stopHeldMovement();
+});
+window.addEventListener?.("blur",stopHeldMovement);
 resetButton.addEventListener("click",resetAllStages);
 document.querySelector("#restartGameButton").addEventListener("click",resetCurrentStage);
 document.querySelector("#endGameButton").addEventListener("click",()=>{if(state.animating)return;gameOverModal.hidden=true;message.textContent="게임을 종료했습니다. ‘처음부터’를 누르면 다시 시작할 수 있습니다.";render()});
