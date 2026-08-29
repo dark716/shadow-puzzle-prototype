@@ -23,7 +23,7 @@
 }
 .actor{
   z-index:2;
-  image-rendering:auto;
+  image-rendering:pixelated;
   filter:drop-shadow(0 2px 4px #000b);
 }
 .shadow-actor{
