@@ -63,10 +63,9 @@ const BUILT_IN_STAGES=[
 
 const APPLIED_STAGES_KEY="shadowPuzzleAppliedStages";
 const SPRITES={
-  playerIdle:"assets/sprites/player_idle.png?v=1",
-  playerWalk:"assets/sprites/player_idle.png?v=2",
-  playerWalkSide:"assets/sprites/player_walk_video.png?v=1",
-  playerThrow:"assets/sprites/player_throw.png?v=1",
+  playerIdle:"assets/sprites/player_redesign_v1.png?v=1",
+  playerWalk:"assets/sprites/player_redesign_v1.png?v=1",
+  playerThrow:"assets/sprites/player_redesign_v1.png?v=1",
   shadowSpawn:"assets/effects/shadow_spawn.png?v=1",
   swapBurst:"assets/effects/swap_burst.png?v=1",
   shuriken:"assets/projectiles/shuriken_spin.png?v=1"
@@ -295,21 +294,15 @@ function animatePlayerMove(from,to,facing){
   if(!actor)return Promise.resolve();
   const cell=board.querySelector(".cell")?.getBoundingClientRect();
   const distanceX=(to.x-from.x)*(cell?.width??48),distanceY=(to.y-from.y)*(cell?.height??48);
-  const sideFacing=facing==="left"||facing==="right";
   actor.classList.remove("idle-animation");actor.classList.add("manual-animation");
-  actor.style.backgroundImage=`url("${sideFacing?SPRITES.playerWalkSide:SPRITES.playerWalk}")`;
-  actor.style.backgroundSize=sideFacing?"800% 200%":"400% 400%";
+  actor.style.backgroundImage=`url("${SPRITES.playerWalk}")`;
+  actor.style.backgroundSize="400% 400%";
   return new Promise(resolve=>{
     const started=performance.now();
     function tick(now){
-      const progress=Math.min(1,(now-started)/duration(sideFacing?300:220));
+      const progress=Math.min(1,(now-started)/duration(280));
       const eased=progress;
-      if(sideFacing){
-        setSheetFrame(actor,Math.min(7,Math.floor(progress*8)),facing==="left"?1:0,8,2);
-      }else{
-        const walkFrames=[0,1,0,2];
-        setSheetFrame(actor,walkFrames[Math.min(3,Math.floor(progress*4))],DIRECTION_ROWS[facing]);
-      }
+      setSheetFrame(actor,Math.min(3,Math.floor(progress*4)),DIRECTION_ROWS[facing]);
       actor.style.transform=`translate(${distanceX*eased}px,${distanceY*eased}px)`;
       if(progress<1)requestAnimationFrame(tick);else resolve();
     }

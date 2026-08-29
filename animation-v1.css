@@ -21,7 +21,14 @@
   will-change:transform,opacity,background-position;
   pointer-events:none;
 }
-.actor{z-index:2;filter:drop-shadow(0 2px 4px #000b)}
+.actor{
+  z-index:2;
+  width:calc(var(--cell) * 1.18);
+  height:calc(var(--cell) * 1.18);
+  margin-left:calc(var(--cell) * -.09);
+  margin-top:calc(var(--cell) * -.18);
+  filter:drop-shadow(0 2px 4px #000b);
+}
 .shadow-actor{
   z-index:1;
   opacity:.82;
