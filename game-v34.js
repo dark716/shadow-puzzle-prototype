@@ -70,6 +70,7 @@ const SPRITES={
   swapBurst:"assets/effects/swap_burst.png?v=1",
   shuriken:"assets/projectiles/shuriken_spin.png?v=1"
 };
+const TILESET="assets/tiles/shadow_puzzle_tileset_v1.png?v=1";
 const DIRECTION_ROWS={down:0,left:1,right:2,up:3};
 const DIRECTION_VECTORS={down:[0,1],left:[-1,0],right:[1,0],up:[0,-1]};
 const REDUCED_MOTION=window.matchMedia?.("(prefers-reduced-motion: reduce)").matches??false;
@@ -205,6 +206,28 @@ function syncBoardCellSize(){
     board.style.setProperty("--cell",mobileCell+"px");
   }else board.style.removeProperty("--cell");
 }
+function setTileArt(element,column,row){
+  element.classList.add("art-tile");
+  element.style.backgroundImage=`url("${TILESET}")`;
+  element.style.backgroundSize="800% 400%";
+  element.style.backgroundPosition=`${column*100/7}% ${row*100/3}%`;
+}
+function floorVariant(x,y){return Math.abs((x*17+y*31+x*y*7)%4)}
+function wallArtAt(x,y){
+  const exposed={
+    top:!walls.has(key(x,y-1)),right:!walls.has(key(x+1,y)),
+    bottom:!walls.has(key(x,y+1)),left:!walls.has(key(x-1,y))
+  };
+  if(exposed.top&&exposed.left)return[0,1];
+  if(exposed.top&&exposed.right)return[1,1];
+  if(exposed.bottom&&exposed.left)return[2,1];
+  if(exposed.bottom&&exposed.right)return[3,1];
+  if(exposed.top)return[4,0];
+  if(exposed.left)return[5,0];
+  if(exposed.right)return[6,0];
+  if(exposed.bottom)return[7,0];
+  return[4,0];
+}
 function render(){
   board.innerHTML="";
   syncBoardCellSize();
@@ -219,6 +242,7 @@ function render(){
     const k=key(x,y);
     if(walls.has(k)){
       el.classList.add("wall");
+      setTileArt(el,...wallArtAt(x,y));
       if(!walls.has(key(x,y-1)))el.classList.add("wall-edge-top");
       if(!walls.has(key(x,y+1)))el.classList.add("wall-edge-bottom");
       if(!walls.has(key(x-1,y)))el.classList.add("wall-edge-left");
@@ -226,10 +250,12 @@ function render(){
     }
     else if(obstacles.has(k)){
       el.classList.add("obstacle");
-      const sprite=document.createElement("img");sprite.className="entity-sprite obstacle-sprite";sprite.src="assets/obstacles/stone-pillar-32.png?v=1";sprite.alt="석조 장애물";sprite.draggable=false;el.append(sprite);
+      setTileArt(el,1,2);
     }
+    else setTileArt(el,floorVariant(x,y),0);
     if(goal.x===x&&goal.y===y){
       el.classList.add("goal");
+      setTileArt(el,4,2);
       el.setAttribute("aria-label",x+", "+y+", 목표");
     }
     if(valid.has(k))el.classList.add("candidate");else if(ring.has(k))el.classList.add("invalid");

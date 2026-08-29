@@ -62,6 +62,9 @@ assert.equal(spritePng.readUInt32BE(20),128,"sprite sheet height must remain 4 �
 const obstaclePng=fs.readFileSync(new URL("../assets/obstacles/stone-pillar-32.png",import.meta.url));
 assert.equal(obstaclePng.readUInt32BE(16),32,"obstacle asset must remain one 32px tile wide");
 assert.equal(obstaclePng.readUInt32BE(20),32,"obstacle asset must remain one 32px tile high");
+const tilesetPng=fs.readFileSync(new URL("../assets/tiles/shadow_puzzle_tileset_v1.png",import.meta.url));
+assert.equal(tilesetPng.readUInt32BE(16),256,"environment tileset must remain 8 × 32px wide");
+assert.equal(tilesetPng.readUInt32BE(20),128,"environment tileset must remain 4 × 32px high");
 const uiCss=fs.readFileSync(new URL("../game-ui-v1.css",import.meta.url),"utf8");
 assert.match(uiCss,/\.actor\{[^}]*width:64px;[^}]*height:64px;/s,"32px actors must render at exact 2× size");
 assert.match(uiCss,/transform-origin:32px 56px/,"scaled (16,28) anchor must remain (32,56)");
@@ -69,6 +72,7 @@ assert.match(uiCss,/@media\(max-width:820px\)\{[^}]*\}\s*\.actor\{[^}]*width:32p
 assert.match(uiCss,/margin-top:calc\(var\(--cell\) - 32px\)/,"the mobile sprite canvas must end at the tile boundary");
 assert.match(uiCss,/\.actor\.facing-left\{margin-left:calc\(var\(--cell\)\/2 - 18px\)\}/,"left-facing sprites need a mobile-only 2px optical correction");
 assert.match(uiCss,/\.skill-pad\{width:40vw;max-width:164px\}/,"mobile console action buttons need balanced space beside the d-pad");
+assert.match(uiCss,/\.cell\.art-tile\{/,"board environment must use the unified PNG tileset");
 
 const run=source=>vm.runInContext(source,context);
 assert.equal(run("state.turn"),0);
