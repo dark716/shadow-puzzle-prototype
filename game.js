@@ -63,9 +63,9 @@ const BUILT_IN_STAGES=[
 
 const APPLIED_STAGES_KEY="shadowPuzzleAppliedStages";
 const SPRITES={
-  playerIdle:"assets/sprites/player_redesign_v2.png?v=1",
-  playerWalk:"assets/sprites/player_redesign_v2.png?v=1",
-  playerThrow:"assets/sprites/player_redesign_v2.png?v=1",
+  playerIdle:"assets/sprites/player_redesign_v3.png?v=1",
+  playerWalk:"assets/sprites/player_redesign_v3.png?v=1",
+  playerThrow:"assets/sprites/player_redesign_v3.png?v=1",
   shadowSpawn:"assets/effects/shadow_spawn.png?v=1",
   swapBurst:"assets/effects/swap_burst.png?v=1",
   shuriken:"assets/projectiles/shuriken_spin.png?v=1"
@@ -180,7 +180,7 @@ function createActor(kind,position,facing){
   actor.className=`actor ${kind}-actor idle-animation`;
   actor.dataset.kind=kind;
   actor.style.backgroundImage=`url("${SPRITES.playerIdle}")`;
-  actor.style.backgroundSize="400% 400%";
+  actor.style.backgroundSize="800% 400%";
   actor.style.backgroundPositionY=((DIRECTION_ROWS[facing]*100)/3)+"%";
   positionEntity(actor,position);
   return actor;
@@ -265,8 +265,8 @@ function playActorFrames(actor,sheet,facing,totalDuration,onFrame){
     const started=performance.now();let previous=-1;
     function tick(now){
       const progress=Math.min(1,(now-started)/duration(totalDuration));
-      const frame=Math.min(3,Math.floor(progress*4));
-      setSheetFrame(actor,frame,DIRECTION_ROWS[facing]);
+      const frame=Math.min(7,Math.floor(progress*8));
+      setSheetFrame(actor,frame,DIRECTION_ROWS[facing],8,4);
       if(frame!==previous){previous=frame;onFrame?.(frame)}
       if(progress<1)requestAnimationFrame(tick);else resolve();
     }
@@ -296,13 +296,13 @@ function animatePlayerMove(from,to,facing){
   const distanceX=(to.x-from.x)*(cell?.width??48),distanceY=(to.y-from.y)*(cell?.height??48);
   actor.classList.remove("idle-animation");actor.classList.add("manual-animation");
   actor.style.backgroundImage=`url("${SPRITES.playerWalk}")`;
-  actor.style.backgroundSize="400% 400%";
+  actor.style.backgroundSize="800% 400%";
   return new Promise(resolve=>{
     const started=performance.now();
     function tick(now){
-      const progress=Math.min(1,(now-started)/duration(280));
+      const progress=Math.min(1,(now-started)/duration(333));
       const eased=progress;
-      setSheetFrame(actor,Math.min(3,Math.floor(progress*4)),DIRECTION_ROWS[facing]);
+      setSheetFrame(actor,Math.min(7,Math.floor(progress*8)),DIRECTION_ROWS[facing],8,4);
       actor.style.transform=`translate(${distanceX*eased}px,${distanceY*eased}px)`;
       if(progress<1)requestAnimationFrame(tick);else resolve();
     }
@@ -423,7 +423,7 @@ async function throwShuriken(){
   state.animating=true;state.selecting=false;state.cursor=null;render();
   const actor=board.querySelector(".player-actor"),origin={...state.player};let flight=null;
   try{
-    await playActorFrames(actor,SPRITES.playerThrow,state.facing,210,frame=>{if(frame>=2&&!flight)flight=launchProjectile(origin,state.facing)});
+    await playActorFrames(actor,SPRITES.playerThrow,state.facing,280,frame=>{if(frame>=4&&!flight)flight=launchProjectile(origin,state.facing)});
     if(flight)await flight;
     message.textContent="표창을 던졌습니다.";
     await spendTurn();
